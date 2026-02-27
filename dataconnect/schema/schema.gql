@@ -1,4 +1,5 @@
 type User @table {
+  id: String! @primaryKey
   username: String!
   email: String!
   passwordHash: String!
@@ -8,6 +9,7 @@ type User @table {
 }
 
 type Ingredient @table {
+  id: UUID! @default(expr: "uuid_v4") @primaryKey
   name: String!
   quantity: Float!
   unit: String!
@@ -39,5 +41,5 @@ type RecipeIngredient @table(key: ["recipe", "ingredient"]) {
 type SavedRecipe @table(key: ["user", "recipe"]) {
   user: User!
   recipe: Recipe!
-  savedAt: Timestamp!
+  savedAt: Timestamp! @default(expr: "request.time")
 }
