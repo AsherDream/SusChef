@@ -1,9 +1,8 @@
 module.exports = function(api) {
-  api.cache(true);
+  // Use cache invalidation based on environment
+  api.cache(() => process.env.BABEL_ENV || process.env.NODE_ENV);
+  
   return {
     presets: ['babel-preset-expo'],
-    plugins: [
-      '@babel/plugin-syntax-import-meta',
-    ],
   };
 };

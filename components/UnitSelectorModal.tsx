@@ -8,6 +8,7 @@ import {
   ScrollView,
   useWindowDimensions,
   Platform,
+  GestureResponderEvent,
 } from 'react-native';
 import { Scale, Droplet, Package } from 'lucide-react-native';
 import { UnitCategorySection, Unit } from './unit-selector/UnitCategorySection';
@@ -90,7 +91,7 @@ export const UnitSelectorModal: React.FC<UnitSelectorModalProps> = ({
       <Pressable style={styles.overlay} onPress={onClose}>
         <Pressable
           style={[styles.sheet, { maxHeight }]}
-          onPress={(e: any) => e.stopPropagation()}
+          onPress={(e: GestureResponderEvent) => e.stopPropagation()}
         >
           {/* Sticky Header */}
           <View style={styles.header}>

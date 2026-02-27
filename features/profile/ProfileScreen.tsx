@@ -55,7 +55,7 @@ export function ProfileScreen() {
             label={diet}
             description={dietDetails[diet]}
             isEnabled={dietaryStyle === diet}
-            onToggle={() => handleDietToggle(diet as any)}
+            onToggle={() => handleDietToggle(diet)}
           />
         ))}
       </View>

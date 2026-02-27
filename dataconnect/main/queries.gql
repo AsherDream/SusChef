@@ -1,0 +1,109 @@
+# ============================================
+# MUTATIONS
+# ============================================
+
+# Upsert user profile using auth.uid
+mutation user_upsert($uid: String!, $name: String!, $email: String!, $dietaryPreferences: String, $allergies: String) @auth(level: USER) {
+  user_upsert(
+    input: {
+      uid: $uid
+      name: $name
+      email: $email
+      dietaryPreferences: $dietaryPreferences
+      allergies: $allergies
+    }
+  ) {
+    uid
+    name
+    email
+    dietaryPreferences
+    allergies
+  }
+}
+
+# Insert a new ingredient for the current user
+mutation ingredient_insert($ingredient_name: String!, $quantity: Float!, $unit: String!, $userId: String!) @auth(level: USER) {
+  ingredient_insert(
+    input: {
+      name: $ingredient_name
+      quantity: $quantity
+      unit: $unit
+      userId: $userId
+    }
+  ) {
+    id
+    name
+    quantity
+    unit
+    userId
+  }
+}
+
+# Delete an ingredient by ID
+mutation ingredient_delete($id: String!) @auth(level: USER) {
+  ingredient_delete(
+    input: { id: $id }
+  ) {
+    success
+  }
+}
+
+# Save a recipe for the current user
+mutation savedRecipe_insert($userId: String!, $recipeId: String!) @auth(level: USER) {
+  savedRecipe_insert(
+    input: {
+      userId: $userId
+      recipeId: $recipeId
+    }
+  ) {
+    id
+    userId
+    recipeId
+    savedAt
+  }
+}
+
+# ============================================
+# QUERIES
+# ============================================
+
+# Get current user profile with dietary preferences and allergies
+query getCurrentUser($uid: String!) @auth(level: USER) {
+  user(uid: $uid) {
+    uid
+    name
+    email
+    dietaryPreferences
+    allergies
+  }
+}
+
+# List all ingredients for the current user (pantry)
+query listPantry($userId: String!) @auth(level: USER) {
+  ingredients(where: { userId: { eq: $userId } }) {
+    id
+    name
+    quantity
+    unit
+    userId
+  }
+}
+
+# List all saved recipes for the current user with recipe details
+query listSavedRecipes($userId: String!) @auth(level: USER) {
+  savedRecipes(where: { userId: { eq: $userId } }) {
+    id
+    userId
+    recipeId
+    savedAt
+    recipe {
+      id
+      title
+      imageUri
+      description
+      servings
+      prepTime
+      cookTime
+    }
+  }
+}
