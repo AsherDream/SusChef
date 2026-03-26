@@ -1,7 +1,8 @@
 import { RouteNames } from './routeNames';
 
-// 1. Types for the outer Stack (Login vs App)
+// 1. Types for the outer Stack (Landing -> Login -> App)
 export type RootStackParamList = {
+  [RouteNames.Landing]: undefined;
   [RouteNames.Login]: undefined;
   [RouteNames.MainApp]: undefined; 
 };
