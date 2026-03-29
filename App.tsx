@@ -5,6 +5,7 @@ import { ErrorBoundary } from './core/utils/ErrorBoundary';
 import AppNavigator from './navigation/AppNavigator';
 import { ThemeProvider } from './core/theme/theme';
 import { useAuthStore } from './store/useAuthStore';
+import { PantryProvider } from './store/usePantryStore';
 import { auth } from './core/config/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -49,9 +50,11 @@ export default function App() {
     <ErrorBoundary>
       <ThemeProvider>
         <SafeAreaProvider>
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
+          <PantryProvider>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </PantryProvider>
         </SafeAreaProvider>
       </ThemeProvider>
     </ErrorBoundary>
