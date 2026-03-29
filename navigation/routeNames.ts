@@ -1,6 +1,7 @@
 // Route names enum for type-safe navigation
 export enum RouteNames {
   Login = 'Login',
+  Register = 'Register',
   MainApp = 'MainApp',
   Pantry = 'Pantry',
   PantryScreen = 'PantryScreen',

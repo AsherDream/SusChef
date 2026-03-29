@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -13,16 +13,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Leaf } from 'lucide-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { InputField } from '../../components/InputField';
-import { SocialButton } from '../../components/SocialButton';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 import { RouteNames } from '../../navigation/routeNames';
 import { RootStackParamList } from '../../navigation/types';
 import { useAuthForm } from './hooks/useAuthForm';
 
-type LoginScreenProps = NativeStackScreenProps<RootStackParamList, typeof RouteNames.Login>;
+type RegisterScreenProps = NativeStackScreenProps<RootStackParamList, typeof RouteNames.Register>;
 
-// Move styles outside component
 const createStyles = () => StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -54,22 +52,13 @@ const createStyles = () => StyleSheet.create({
   formSection: {
     marginBottom: layout.spacing.xl,
   },
-  forgotPasswordContainer: {
-    alignItems: 'flex-end',
-    marginTop: layout.spacing.sm,
-  },
-  forgotPasswordText: {
-    fontSize: typography.size.caption,
-    color: colors.primary,
-    fontWeight: '600' as const,
-  },
   errorText: {
     fontSize: typography.size.caption,
     color: colors.status.error,
     marginTop: -layout.spacing.sm,
     marginBottom: layout.spacing.md,
   },
-  loginButton: {
+  registerButton: {
     backgroundColor: colors.primary,
     borderRadius: layout.radius.full,
     paddingVertical: layout.spacing.md,
@@ -78,46 +67,23 @@ const createStyles = () => StyleSheet.create({
     justifyContent: 'center',
     marginBottom: layout.spacing.lg,
   },
-  loginButtonText: {
+  registerButtonText: {
     color: colors.surface,
     fontSize: typography.size.body,
     fontWeight: '700' as const,
   },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: layout.spacing.lg,
-    gap: layout.spacing.md,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.border,
-  },
-  dividerText: {
-    fontSize: typography.size.caption,
-    color: colors.text.secondary,
-  },
-  socialSection: {
-    flexDirection: 'row',
-    gap: layout.spacing.md,
-    marginBottom: layout.spacing.xl,
-  },
-  socialButton: {
-    flex: 1,
-  },
-  signUpContainer: {
+  loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: layout.spacing.sm,
     marginTop: layout.spacing.lg,
   },
-  signUpText: {
+  loginText: {
     fontSize: typography.size.body,
     color: colors.text.secondary,
   },
-  signUpLink: {
+  loginLink: {
     fontSize: typography.size.body,
     color: colors.primary,
     fontWeight: '600' as const,
@@ -126,7 +92,7 @@ const createStyles = () => StyleSheet.create({
 
 const styles = createStyles();
 
-export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const {
     email,
     password,
@@ -136,39 +102,34 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     setEmail,
     setPassword,
     togglePasswordVisibility,
-    handleLogin,
-    handleSocialLogin,
+    handleRegister,
   } = useAuthForm();
 
-  const handleLoginPress = async () => {
-    const success = await handleLogin();
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
+
+  const handleRegisterPress = async () => {
+    if (!confirmPassword.trim()) {
+      setConfirmPasswordError('Please confirm your password.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setConfirmPasswordError('Passwords do not match.');
+      return;
+    }
+
+    setConfirmPasswordError(null);
+    const success = await handleRegister();
+
     if (success) {
       navigation.navigate(RouteNames.MainApp);
     }
   };
 
-  const handleGoogleLoginPress = async () => {
-    const success = await handleSocialLogin('google');
-    if (success) {
-      navigation.navigate(RouteNames.MainApp);
-    }
-  };
-
-  const handleFacebookLoginPress = async () => {
-    const success = await handleSocialLogin('facebook');
-    if (success) {
-      navigation.navigate(RouteNames.MainApp);
-    }
-  };
-
-  const handleSignUpPress = () => {
-    navigation.navigate(RouteNames.Register);
-  };
-
-  const handleForgotPassword = () => {
-    // TODO: Create ForgotPassword screen and navigate to it
-    console.log('Navigate to ForgotPassword');
-    // navigation.navigate('ForgotPassword');
+  const handleGoToLogin = () => {
+    navigation.navigate(RouteNames.Login);
   };
 
   return (
@@ -181,16 +142,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         >
-          {/* Header Section */}
           <View style={styles.headerSection}>
             <View style={styles.leafIcon}>
               <Leaf size={64} color={colors.primary} />
             </View>
-            <Text style={styles.title}>SusChef</Text>
-            <Text style={styles.subtitle}>Turn leftovers into meals</Text>
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>Join SusChef and start cooking smarter</Text>
           </View>
 
-          {/* Form Section */}
           <View style={styles.formSection}>
             <InputField
               label="Email"
@@ -202,7 +161,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
             <InputField
               label="Password"
-              placeholder="Enter your password"
+              placeholder="Create a password"
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -210,59 +169,36 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
               onIconPress={togglePasswordVisibility}
             />
 
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            <InputField
+              label="Confirm Password"
+              placeholder="Re-enter your password"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry={!showConfirmPassword}
+              iconName={showConfirmPassword ? 'eye' : 'eyeOff'}
+              onIconPress={() => setShowConfirmPassword((prev) => !prev)}
+            />
 
-            <Pressable
-              style={styles.forgotPasswordContainer}
-              onPress={handleForgotPassword}
-            >
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </Pressable>
+            {confirmPasswordError && <Text style={styles.errorText}>{confirmPasswordError}</Text>}
+            {error && <Text style={styles.errorText}>{error}</Text>}
           </View>
 
-          {/* Action Section */}
           <Pressable
-            style={styles.loginButton}
-            onPress={handleLoginPress}
+            style={styles.registerButton}
+            onPress={handleRegisterPress}
             disabled={isLoading}
           >
             {isLoading ? (
               <ActivityIndicator color={colors.surface} />
             ) : (
-              <Text style={styles.loginButtonText}>Log In</Text>
+              <Text style={styles.registerButtonText}>Sign Up</Text>
             )}
           </Pressable>
 
-          {/* Divider */}
-          <View style={styles.dividerContainer}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>Or continue with</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* Social Section */}
-          <View style={styles.socialSection}>
-            <View style={styles.socialButton}>
-              <SocialButton
-                title="Google"
-                iconName="google"
-                onPress={handleGoogleLoginPress}
-              />
-            </View>
-            <View style={styles.socialButton}>
-              <SocialButton
-                title="Facebook"
-                iconName="facebook"
-                onPress={handleFacebookLoginPress}
-              />
-            </View>
-          </View>
-
-          {/* Sign Up Link */}
-          <View style={styles.signUpContainer}>
-            <Text style={styles.signUpText}>Don't have an account?</Text>
-            <Pressable onPress={handleSignUpPress} disabled={isLoading}>
-              <Text style={styles.signUpLink}>Sign Up</Text>
+          <View style={styles.loginContainer}>
+            <Text style={styles.loginText}>Already have an account?</Text>
+            <Pressable onPress={handleGoToLogin} disabled={isLoading}>
+              <Text style={styles.loginLink}>Log In</Text>
             </Pressable>
           </View>
         </ScrollView>
@@ -271,4 +207,4 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;
