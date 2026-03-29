@@ -10,16 +10,16 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Leaf } from 'lucide-react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { InputField } from '../../components/InputField';
 import { SocialButton } from '../../components/SocialButton';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 import { RouteNames } from '../../navigation/routeNames';
+import { RootStackParamList } from '../../navigation/types';
 import { isValidEmail } from '../../core/utils/helpers';
 
-interface LoginScreenProps {
-  navigation: any;
-}
+type LoginScreenProps = NativeStackScreenProps<RootStackParamList, typeof RouteNames.Login>;
 
 // Move styles outside component
 const createStyles = () => StyleSheet.create({

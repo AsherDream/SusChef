@@ -10,21 +10,21 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Sparkles } from 'lucide-react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PantrySection } from '../../components/PantrySection';
-import { IngredientRow } from '../../components/IngredientRow';
+import { IngredientListItem } from '../../components/IngredientListItem';
 import { ToolRow } from '../../components/ToolRow';
 import { Button } from '../../components/Button';
 import { LoadingScreen } from '../recommendations/LoadingScreen';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 import { RouteNames } from '../../navigation/routeNames';
+import { TabParamList } from '../../navigation/types';
 import { usePantryStore, Ingredient } from '../../store';
 import { APP_CONSTANTS } from '../../core/constants/appConstants';
 import { Tool } from '../../models/Tool';
 
-interface PantryScreenProps {
-  navigation?: any;
-}
+type PantryScreenProps = NativeStackScreenProps<TabParamList, typeof RouteNames.Pantry>;
 
 // Move styles outside component to prevent recreation on every render
 const createStyles = () => StyleSheet.create({
@@ -86,6 +86,8 @@ const styles = createStyles();
 export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
   const { height } = useWindowDimensions();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Get pantry context with state and actions
   const { state, addIngredient, removeIngredient, updateIngredient } = usePantryStore();
   const ingredients = state.ingredients;
 
@@ -208,16 +210,14 @@ export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
                       flex={1}
                       showsVerticalScrollIndicator={true}
                       renderItem={(item: Ingredient) => (
-                        <IngredientRow
-                          label={item.name}
-                          amount={item.amount}
-                          unit={item.unit}
+                        <IngredientListItem
+                          item={item}
                           onDelete={() => handleDeleteIngredient(item.id)}
-                          onAmountChange={(newAmount) => {
-                            updateIngredient(item.id, { amount: newAmount });
+                          onAmountChange={(id, amount) => {
+                            updateIngredient(id, { amount });
                           }}
-                          onUnitChange={(newUnit) => {
-                            updateIngredient(item.id, { unit: newUnit });
+                          onUnitChange={(id, unit) => {
+                            updateIngredient(id, { unit });
                           }}
                         />
                       )}
