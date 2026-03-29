@@ -15,7 +15,13 @@ export type TabParamList = {
   [RouteNames.RecipeDetail]: { recipeId: string };
 };
 
+export type PantryStackParamList = {
+  [RouteNames.PantryScreen]: undefined;
+  [RouteNames.RecipeResults]: undefined;
+  [RouteNames.RecipeDetail]: { recipeId: string };
+};
+
 export type ProfileStackParamList = {
-  [RouteNames.Profile]: undefined;
+  [RouteNames.ProfileScreen]: undefined;
   [RouteNames.SettingsDetail]: undefined;
 };

@@ -8,14 +8,14 @@ import { SavedRecipesScreen } from '../features/home/SavedRecipesScreen';
 import { RecipeResultsScreen } from '../features/recommendations/RecipeResultsScreen';
 import { RecipeDetailScreen } from '../features/recommendations/RecipeDetailScreen';
 import { RouteNames } from './routeNames';
-import { TabParamList, ProfileStackParamList } from './types';
+import { TabParamList, PantryStackParamList, ProfileStackParamList } from './types';
 import { colors } from '../core/theme/colors';
 import { typography } from '../core/theme/typography';
 import { ProfileScreen } from '../features/profile/ProfileScreen';
 import { SettingsDetailScreen } from '../features/profile/SettingsDetailScreen';
 
 const Tab = createBottomTabNavigator<TabParamList>();
-const PantryStack = createNativeStackNavigator();
+const PantryStack = createNativeStackNavigator<PantryStackParamList>();
 const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
 const styles = StyleSheet.create({
@@ -44,7 +44,7 @@ function PantryStackNavigator() {
   return (
     <PantryStack.Navigator screenOptions={{ headerShown: false }}>
       <PantryStack.Screen
-        name={RouteNames.Pantry}
+        name={RouteNames.PantryScreen}
         component={PantryScreen}
       />
       <PantryStack.Screen
@@ -62,7 +62,7 @@ function PantryStackNavigator() {
 function ProfileStackNavigator() {
   return (
     <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
-      <ProfileStack.Screen name={RouteNames.Profile} component={ProfileScreen} />
+      <ProfileStack.Screen name={RouteNames.ProfileScreen} component={ProfileScreen} />
       <ProfileStack.Screen name={RouteNames.SettingsDetail} component={SettingsDetailScreen} />
     </ProfileStack.Navigator>
   );

@@ -19,12 +19,12 @@ import { LoadingScreen } from '../recommendations/LoadingScreen';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 import { RouteNames } from '../../navigation/routeNames';
-import { TabParamList } from '../../navigation/types';
+import { PantryStackParamList } from '../../navigation/types';
 import { usePantryStore, Ingredient } from '../../store';
 import { APP_CONSTANTS } from '../../core/constants/appConstants';
 import { Tool } from '../../models/Tool';
 
-type PantryScreenProps = NativeStackScreenProps<TabParamList, typeof RouteNames.Pantry>;
+type PantryScreenProps = NativeStackScreenProps<PantryStackParamList, typeof RouteNames.PantryScreen>;
 
 // Move styles outside component to prevent recreation on every render
 const createStyles = () => StyleSheet.create({
