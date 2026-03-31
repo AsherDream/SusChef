@@ -57,6 +57,8 @@ const toStoreUser = (user: User) => ({
   email: user.email,
   displayName: user.displayName || undefined,
   emailVerified: user.emailVerified,
+  allergies: [],
+  pdpaConsent: false,
 });
 
 export const useAuthForm = (): UseAuthFormReturn => {

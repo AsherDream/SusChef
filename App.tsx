@@ -38,6 +38,8 @@ export default function App() {
           email: user.email,
           displayName: user.displayName || undefined, // Required for Social Auth
           emailVerified: user.emailVerified,           // Required for Security Gate
+          allergies: [],                               // Initialize empty allergy list
+          pdpaConsent: false,                          // Default consent to false
         });
       } else {
         // Clear user state on logout or session expiry (security fix)

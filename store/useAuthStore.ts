@@ -7,6 +7,8 @@ interface AuthUser {
   email: string | null;
   displayName?: string;
   emailVerified: boolean;
+  allergies: string[];
+  pdpaConsent: boolean;
 }
 
 interface AuthState {
@@ -16,6 +18,7 @@ interface AuthState {
   clearUser: () => void;
   checkAuthStatus: () => void;
   setLoading: (isLoading: boolean) => void;
+  updateProfile: (allergies: string[], pdpaConsent: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -30,6 +33,17 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: false });
       },
       setLoading: (isLoading) => set({ isLoading }),
+      updateProfile: (allergies: string[], pdpaConsent: boolean) => {
+        set((state) => ({
+          user: state.user
+            ? {
+                ...state.user,
+                allergies,
+                pdpaConsent,
+              }
+            : null,
+        }));
+      },
     }),
     {
       name: 'auth-store',
