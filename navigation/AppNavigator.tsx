@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RouteNames } from './routeNames';
 import { RootStackParamList } from './types'; 
 import LoginScreen from '../features/auth/LoginScreen';
-import RegisterScreen from '../features/auth/RegisterScreen.tsx';
+import RegisterScreen from '../features/auth/RegisterScreen';
 import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

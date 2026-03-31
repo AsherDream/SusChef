@@ -4,7 +4,7 @@
 
 import { Recipe } from '../../models/Recipe';
 import { MOCK_RECIPES } from '../../core/constants/mockRecipes';
-import { API_CONFIG } from '../config/apiConfig';
+import { API_CONFIG } from '../../core/config/apiConfig';
 
 // Simulate API delay to properly trigger loading states
 const SIMULATED_API_DELAY = 1500; // ms

@@ -39,6 +39,10 @@ export default function App() {
           displayName: user.displayName || undefined, // Required for Social Auth
           emailVerified: user.emailVerified,           // Required for Security Gate
         });
+      } else {
+        // Clear user state on logout or session expiry (security fix)
+        const { clearUser } = useAuthStore.getState();
+        clearUser();
       }
     });
 

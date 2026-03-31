@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileHeader } from '../../components/profile/ProfileHeader';
 import { SettingRow } from '../../components/profile/SettingRow';
 import { PreferenceToggle } from '../../components/profile/PreferenceToggle';
@@ -10,6 +11,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { layout, typography } from '../../core/theme/typography';
 import { RouteNames } from '../../navigation/routeNames';
 import { useThemeColors } from '../../core/theme/theme';
+import { RootStackParamList } from '../../navigation/types';
 
 const dietDetails: Record<'Vegan' | 'Vegetarian' | 'Keto' | 'Paleo', string> = {
   Vegan: 'No animal products; plant-based meals only.',
@@ -20,7 +22,7 @@ const dietDetails: Record<'Vegan' | 'Vegetarian' | 'Keto' | 'Paleo', string> = {
 const diets = Object.keys(dietDetails) as Array<keyof typeof dietDetails>;
 
 export function ProfileScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const colors = useThemeColors();
   const {
     toggleTheme,
