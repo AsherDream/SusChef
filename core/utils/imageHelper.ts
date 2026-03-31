@@ -1,17 +1,17 @@
 /**
- * Generates dynamic image URLs for recipes based on recipe title
- * Uses Unsplash's source service for high-quality food images
+ * Generates dynamic image URLs for recipes using a reliable placeholder service
+ * Uses picsum.photos for consistent, highly available food image placeholders
  */
 
 export const getRecipeImage = (query: string): string => {
-  // This uses Unsplash's source service to find a random high-quality food image
-  // based on the search term (e.g., "Tomato Soup")
-  const formattedQuery = encodeURIComponent(`${query},food`);
-  return `https://source.unsplash.com/featured/800x600?${formattedQuery}`;
+  // Use picsum.photos with a seed based on the query for consistent images
+  // This service is highly reliable and returns 400x600 images
+  const seed = encodeURIComponent(query).substring(0, 20);
+  return `https://picsum.photos/seed/${seed}/400/300`;
 };
 
 /**
- * Gets a recipe image URL with fallback to dynamic Unsplash URL
+ * Gets a recipe image URL with fallback to dynamic placeholder URL
  * @param imageUrl - The primary image URL (can be null or undefined)
  * @param recipeTitle - The recipe title for generating fallback image
  * @returns A valid image URL string

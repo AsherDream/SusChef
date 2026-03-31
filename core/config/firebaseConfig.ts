@@ -20,10 +20,10 @@ let auth: Auth;
 try {
   app = initializeApp(firebaseConfig);
 
-  // For Web (Expo Web), use getAuth which handles persistence via localStorage
-  // For Mobile (native), we need to use initializeAuth with AsyncStorage persistence
+  // Initialize auth with AsyncStorage persistence for React Native (Expo)
+  // This ensures users stay logged in across app restarts on both mobile and web
   try {
-    // Try to use initializeAuth with React Native persistence (works on both web and mobile via Expo)
+    // Dynamically import getReactNativePersistence to handle both web and native environments
     const { getReactNativePersistence } = require('firebase/auth/react-native');
     auth = initializeAuth(app, {
       persistence: getReactNativePersistence(ReactNativeAsyncStorage),
@@ -31,7 +31,7 @@ try {
     console.log('Firebase Auth initialized with AsyncStorage persistence');
   } catch (e) {
     // Fallback: If React Native persistence is not available, use getAuth
-    // This ensures web builds work without the react-native module
+    // This handles edge cases and ensures web builds work without the react-native module
     auth = getAuth(app);
     console.log('Firebase Auth initialized with default persistence');
   }
