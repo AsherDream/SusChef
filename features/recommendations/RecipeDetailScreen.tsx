@@ -15,6 +15,7 @@ import { InstructionStep } from '../../components/InstructionStep';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 import { MOCK_RECIPES } from '../../core/constants/mockRecipes';
+import { getRecipeImage } from '../../core/utils/imageHelper';
 import { useRecipeStore } from '../../store/useRecipeStore';
 
 interface RecipeDetailScreenProps {
@@ -151,7 +152,7 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
         {/* Image Section */}
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: recipe.image }}
+            source={{ uri: getRecipeImage(recipe.image) }}
             style={styles.image}
             resizeMode="cover"
           />

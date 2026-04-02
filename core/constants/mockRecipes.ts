@@ -7,7 +7,7 @@ export const MOCK_RECIPES: Recipe[] = [
     time: 15,
     matchScore: 8,
     totalItems: 10,
-    image: 'https://picsum.photos/seed/fried-rice/400/300',
+    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=80',
     ingredients: [
       'Cooked Rice',
       'Eggs',
@@ -37,7 +37,7 @@ export const MOCK_RECIPES: Recipe[] = [
     time: 25,
     matchScore: 7,
     totalItems: 9,
-    image: 'https://picsum.photos/seed/tomato-soup/400/300',
+    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80',
     ingredients: [
       'Canned Tomatoes',
       'Onion',
@@ -68,7 +68,7 @@ export const MOCK_RECIPES: Recipe[] = [
     time: 10,
     matchScore: 9,
     totalItems: 11,
-    image: 'https://picsum.photos/seed/green-salad/400/300',
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80',
     ingredients: [
       'Mixed Greens',
       'Arugula',
