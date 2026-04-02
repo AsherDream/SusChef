@@ -1,17 +1,19 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   View,
   Text,
   ScrollView,
   Pressable,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RecipeCard } from '../../components/RecipeCard';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useRecipeStore } from '../../store/useRecipeStore';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
-import { MOCK_RECIPES } from '../../core/constants/mockRecipes';
 
 interface RecipeResultsScreenProps {
   navigation: any;
@@ -49,11 +51,37 @@ const createStyles = () => StyleSheet.create({
     paddingTop: layout.spacing.lg,
     paddingBottom: layout.spacing.xl,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: layout.spacing.xl,
+  },
+  loadingText: {
+    fontSize: typography.size.body,
+    color: colors.text.secondary,
+    marginTop: layout.spacing.md,
+    textAlign: 'center',
+  },
   emptyText: {
     fontSize: typography.size.body,
     color: colors.text.secondary,
     textAlign: 'center',
     marginTop: layout.spacing.xl,
+  },
+  errorContainer: {
+    paddingHorizontal: layout.spacing.lg,
+    paddingVertical: layout.spacing.md,
+    marginTop: layout.spacing.lg,
+    backgroundColor: '#FDE8E8',
+    borderRadius: layout.radius.md,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.status.error,
+  },
+  errorText: {
+    fontSize: typography.size.body,
+    color: colors.status.error,
+    fontWeight: '600' as const,
   },
 });
 
@@ -62,6 +90,22 @@ const styles = createStyles();
 export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
   navigation,
 }) => {
+  const { user } = useAuthStore();
+  const { generatedRecipes, isGenerating, error, generateRecipes, clearRecipes } =
+    useRecipeStore();
+
+  // Generate recipes on mount if not already generated
+  useEffect(() => {
+    if (generatedRecipes.length === 0 && !isGenerating && user?.uid) {
+      generateRecipes(user.uid);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      clearRecipes();
+    };
+  }, []);
+
   const handleRecipePress = useCallback(
     (recipeId: string) => {
       navigation.navigate('RecipeDetail', { recipeId });
@@ -91,8 +135,27 @@ export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {MOCK_RECIPES.length > 0 ? (
-          MOCK_RECIPES.map((recipe) => (
+        {/* Loading State */}
+        {isGenerating && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator
+              size="large"
+              color={colors.primary}
+            />
+            <Text style={styles.loadingText}>Chef Gemini is thinking...</Text>
+          </View>
+        )}
+
+        {/* Error State */}
+        {error && !isGenerating && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>⚠ {error}</Text>
+          </View>
+        )}
+
+        {/* Generated Recipes */}
+        {!isGenerating && generatedRecipes.length > 0 ? (
+          generatedRecipes.map((recipe) => (
             <RecipeCard
               key={recipe.id}
               recipe={recipe}
@@ -100,7 +163,10 @@ export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
             />
           ))
         ) : (
-          <Text style={styles.emptyText}>No recipes found</Text>
+          !isGenerating &&
+          !error && (
+            <Text style={styles.emptyText}>No recipes found</Text>
+          )
         )}
       </ScrollView>
     </SafeAreaView>
