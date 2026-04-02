@@ -5,7 +5,7 @@ import { ErrorBoundary } from './core/utils/ErrorBoundary';
 import AppNavigator from './navigation/AppNavigator';
 import { ThemeProvider } from './core/theme/theme';
 import { useAuthStore } from './store/useAuthStore';
-import { PantryProvider } from './store/usePantryStore';
+import { usePantryStore } from './store/usePantryStore';
 import { auth } from './core/config/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -18,6 +18,7 @@ console.log('SafeAreaProvider:', typeof SafeAreaProvider);
 
 export default function App() {
   const { setUser, checkAuthStatus, fetchAndSetProfile } = useAuthStore();
+  const { fetchAndSetPantry, clearPantry } = usePantryStore();
 
   // Initialize Firebase Auth listener
   useEffect(() => {
@@ -49,10 +50,21 @@ export default function App() {
           console.warn('Failed to fetch user profile from Firestore:', error);
           // Continue with defaults if fetch fails
         }
+
+        // Fetch user pantry data from Firestore
+        try {
+          await fetchAndSetPantry(user.uid);
+        } catch (error) {
+          console.warn('Failed to fetch user pantry from Firestore:', error);
+          // Continue with defaults if fetch fails
+        }
       } else {
         // Clear user state on logout or session expiry (security fix)
         const { clearUser } = useAuthStore.getState();
         clearUser();
+
+        // Clear pantry data on logout
+        clearPantry();
       }
     });
 
@@ -64,11 +76,9 @@ export default function App() {
     <ErrorBoundary>
       <ThemeProvider>
         <SafeAreaProvider>
-          <PantryProvider>
-            <NavigationContainer>
-              <AppNavigator />
-            </NavigationContainer>
-          </PantryProvider>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
         </SafeAreaProvider>
       </ThemeProvider>
     </ErrorBoundary>
