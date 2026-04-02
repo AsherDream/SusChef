@@ -4,6 +4,7 @@ import { RouteNames } from './routeNames';
 export type RootStackParamList = {
   [RouteNames.Login]: undefined;
   [RouteNames.Register]: undefined;
+  [RouteNames.ForgotPassword]: undefined;
   [RouteNames.MainApp]: undefined; 
 };
 

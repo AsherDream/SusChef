@@ -2,6 +2,7 @@
 export enum RouteNames {
   Login = 'Login',
   Register = 'Register',
+  ForgotPassword = 'ForgotPassword',
   MainApp = 'MainApp',
   Pantry = 'Pantry',
   PantryScreen = 'PantryScreen',

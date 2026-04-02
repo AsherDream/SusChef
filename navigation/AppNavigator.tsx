@@ -4,6 +4,7 @@ import { RouteNames } from './routeNames';
 import { RootStackParamList } from './types'; 
 import LoginScreen from '../features/auth/LoginScreen';
 import RegisterScreen from '../features/auth/RegisterScreen';
+import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
 import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -29,6 +30,12 @@ export default function AppNavigator() {
       <Stack.Screen
         name={RouteNames.Register}
         component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name={RouteNames.ForgotPassword}
+        component={ForgotPasswordScreen}
         options={{ headerShown: false }}
       />
 

@@ -166,9 +166,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   };
 
   const handleForgotPassword = () => {
-    // TODO: Create ForgotPassword screen and navigate to it
-    console.log('Navigate to ForgotPassword');
-    // navigation.navigate('ForgotPassword');
+    navigation.navigate(RouteNames.ForgotPassword);
   };
 
   return (
