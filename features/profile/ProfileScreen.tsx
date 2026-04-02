@@ -77,8 +77,8 @@ export function ProfileScreen() {
 
     setIsSaving(true);
     try {
-      // Save to Zustand store
-      updateProfile(selectedAllergies, pdpaConsent);
+      // Save to Zustand store and Firestore
+      await updateProfile(selectedAllergies, pdpaConsent);
       Alert.alert('Success', 'Your allergy preferences have been saved.');
     } catch (error) {
       Alert.alert('Error', 'Failed to save preferences. Please try again.');

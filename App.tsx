@@ -17,7 +17,7 @@ console.log('SafeAreaProvider:', typeof SafeAreaProvider);
 
 
 export default function App() {
-  const { setUser, checkAuthStatus } = useAuthStore();
+  const { setUser, checkAuthStatus, fetchAndSetProfile } = useAuthStore();
 
   // Initialize Firebase Auth listener
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function App() {
     }
 
     // Set up listener for auth state changes
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser({
           uid: user.uid,
@@ -41,6 +41,14 @@ export default function App() {
           allergies: [],                               // Initialize empty allergy list
           pdpaConsent: false,                          // Default consent to false
         });
+
+        // Fetch user profile data from Firestore (allergies, consent)
+        try {
+          await fetchAndSetProfile(user.uid);
+        } catch (error) {
+          console.warn('Failed to fetch user profile from Firestore:', error);
+          // Continue with defaults if fetch fails
+        }
       } else {
         // Clear user state on logout or session expiry (security fix)
         const { clearUser } = useAuthStore.getState();
@@ -50,7 +58,7 @@ export default function App() {
 
     // Cleanup listener on unmount
     return () => unsubscribe();
-  }, [setUser, checkAuthStatus]);
+  }, [setUser, checkAuthStatus, fetchAndSetProfile]);
 
   return (
     <ErrorBoundary>
