@@ -2,21 +2,22 @@ import React from 'react';
 import { StyleSheet, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Refrigerator, Heart, User } from 'lucide-react-native';
+import { Refrigerator, Heart, User, Utensils } from 'lucide-react-native';
 import PantryScreen from '../features/pantry/PantryScreen';
 import { SavedRecipesScreen } from '../features/home/SavedRecipesScreen';
 import { RecipeResultsScreen } from '../features/recommendations/RecipeResultsScreen';
 import { RecipeDetailScreen } from '../features/recommendations/RecipeDetailScreen';
 import { RouteNames } from './routeNames';
-import { TabParamList, ProfileStackParamList } from './types';
+import { TabParamList, PantryStackParamList, ProfileStackParamList, RecipesStackParamList } from './types';
 import { colors } from '../core/theme/colors';
 import { typography } from '../core/theme/typography';
 import { ProfileScreen } from '../features/profile/ProfileScreen';
 import { SettingsDetailScreen } from '../features/profile/SettingsDetailScreen';
 
 const Tab = createBottomTabNavigator<TabParamList>();
-const PantryStack = createNativeStackNavigator();
+const PantryStack = createNativeStackNavigator<PantryStackParamList>();
 const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
+const RecipesStack = createNativeStackNavigator<RecipesStackParamList>();
 
 const styles = StyleSheet.create({
   tabBar: {
@@ -44,25 +45,33 @@ function PantryStackNavigator() {
   return (
     <PantryStack.Navigator screenOptions={{ headerShown: false }}>
       <PantryStack.Screen
-        name={RouteNames.Pantry}
+        name={RouteNames.PantryScreen}
         component={PantryScreen}
       />
-      <PantryStack.Screen
-        name={RouteNames.RecipeResults}
+    </PantryStack.Navigator>
+  );
+}
+
+// Nested Stack for Recipes
+function RecipesStackNavigator() {
+  return (
+    <RecipesStack.Navigator screenOptions={{ headerShown: false }}>
+      <RecipesStack.Screen
+        name={RouteNames.RecipeResultsScreen}
         component={RecipeResultsScreen}
       />
-      <PantryStack.Screen
+      <RecipesStack.Screen
         name={RouteNames.RecipeDetail}
         component={RecipeDetailScreen}
       />
-    </PantryStack.Navigator>
+    </RecipesStack.Navigator>
   );
 }
 
 function ProfileStackNavigator() {
   return (
     <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
-      <ProfileStack.Screen name={RouteNames.Profile} component={ProfileScreen} />
+      <ProfileStack.Screen name={RouteNames.ProfileScreen} component={ProfileScreen} />
       <ProfileStack.Screen name={RouteNames.SettingsDetail} component={SettingsDetailScreen} />
     </ProfileStack.Navigator>
   );
@@ -97,6 +106,16 @@ export default function TabNavigator() {
           tabBarLabel: 'Pantry',
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
             <Refrigerator size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={RouteNames.Recipes}
+        component={RecipesStackNavigator}
+        options={{
+          tabBarLabel: 'Recipes',
+          tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+            <Utensils size={size} color={color} />
           ),
         }}
       />

@@ -7,7 +7,7 @@ export const MOCK_RECIPES: Recipe[] = [
     time: 15,
     matchScore: 8,
     totalItems: 10,
-    image: 'https://images.unsplash.com/photo-1685521201966-f0d474dfb133?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=80',
     ingredients: [
       'Cooked Rice',
       'Eggs',
@@ -37,7 +37,7 @@ export const MOCK_RECIPES: Recipe[] = [
     time: 25,
     matchScore: 7,
     totalItems: 9,
-    image: 'https://images.unsplash.com/photo-1547592166-7aae4d755744?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80',
     ingredients: [
       'Canned Tomatoes',
       'Onion',
@@ -68,7 +68,7 @@ export const MOCK_RECIPES: Recipe[] = [
     time: 10,
     matchScore: 9,
     totalItems: 11,
-    image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80',
     ingredients: [
       'Mixed Greens',
       'Arugula',

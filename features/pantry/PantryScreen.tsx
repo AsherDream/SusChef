@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,21 +10,23 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Sparkles } from 'lucide-react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PantrySection } from '../../components/PantrySection';
-import { IngredientRow } from '../../components/IngredientRow';
+import { IngredientListItem } from '../../components/IngredientListItem';
 import { ToolRow } from '../../components/ToolRow';
 import { Button } from '../../components/Button';
 import { LoadingScreen } from '../recommendations/LoadingScreen';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 import { RouteNames } from '../../navigation/routeNames';
-import { usePantryStore, Ingredient } from '../../store';
+import { PantryStackParamList } from '../../navigation/types';
+import { usePantryStore, type Ingredient } from '../../store/usePantryStore';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useRecipeStore } from '../../store/useRecipeStore';
 import { APP_CONSTANTS } from '../../core/constants/appConstants';
 import { Tool } from '../../models/Tool';
 
-interface PantryScreenProps {
-  navigation?: any;
-}
+type PantryScreenProps = NativeStackScreenProps<PantryStackParamList, typeof RouteNames.PantryScreen>;
 
 // Move styles outside component to prevent recreation on every render
 const createStyles = () => StyleSheet.create({
@@ -86,99 +88,153 @@ const styles = createStyles();
 export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
   const { height } = useWindowDimensions();
   const [isLoading, setIsLoading] = useState(false);
-  const { state, addIngredient, removeIngredient, updateIngredient } = usePantryStore();
-  const ingredients = state.ingredients;
 
-  const [tools, setTools] = useState<Tool[]>([
-    { id: 't1', name: 'Microwave', isChecked: true },
-    { id: 't2', name: 'Oven', isChecked: false },
-    { id: 't3', name: 'Blender', isChecked: true },
-  ]);
+  // Get state from Zustand stores
+  const { user } = useAuthStore();
+  const { ingredients, kitchenTools, addIngredient, removeIngredient, updateIngredientAmount, updateIngredientUnit, toggleKitchenTool, syncPantryToCloud } = usePantryStore();
 
-  // Memoize sorted tools to prevent unnecessary recreations
-  const sortedTools = useMemo(() => {
-    return [...tools].sort((a: Tool, b: Tool) => {
+  // Helper function to convert kitchenTools array to Tool objects for the ToolRow
+  const toolsArray: Tool[] = useMemo(() => {
+    // Define all available kitchen tools
+    const allTools = [
+      { id: 't1', name: 'Microwave' },
+      { id: 't2', name: 'Oven' },
+      { id: 't3', name: 'Blender' },
+      { id: 't4', name: 'Stovetop' },
+      { id: 't5', name: 'Grill' },
+    ];
+    
+    // Map to include isChecked status from kitchenTools array
+    return allTools.map((tool) => ({
+      ...tool,
+      isChecked: kitchenTools.includes(tool.name),
+    })).sort((a, b) => {
       if (a.isChecked === b.isChecked) return 0;
       return a.isChecked ? -1 : 1;
     });
-  }, [tools]);
+  }, [kitchenTools]);
 
-  const handleAddIngredient = useCallback((name: string) => {
+  const handleAddIngredient = useCallback(async (name: string) => {
     if (name.trim()) {
-      addIngredient(name);
+      try {
+        await addIngredient(name, 1, 'pcs');
+        // Sync will happen via useEffect
+      } catch (error) {
+        Alert.alert('Error', 'Failed to add ingredient. Please try again.');
+      }
     }
   }, [addIngredient]);
 
-  const handleAddTool = useCallback((name: string) => {
+  const handleAddTool = useCallback(async (name: string) => {
     if (name.trim()) {
-      setTools((prev) => {
-        const newTool: Tool = {
-          id: `t${Date.now()}`,
-          name: name.trim(),
-          isChecked: true,
-        };
-        const updated = [...prev, newTool];
-        return updated.sort((a, b) => {
-          if (a.isChecked === b.isChecked) return 0;
-          return a.isChecked ? -1 : 1;
-        });
-      });
+      try {
+        await toggleKitchenTool(name.trim());
+        // Sync will happen via useEffect
+      } catch (error) {
+        Alert.alert('Error', 'Failed to add tool. Please try again.');
+      }
     }
-  }, []);
+  }, [toggleKitchenTool]);
 
-  const handleDeleteIngredient = useCallback((id: string) => {
+  const handleDeleteIngredient = useCallback(async (id: string) => {
     const ingredient = ingredients.find((ing) => ing.id === id);
     if (!ingredient) return;
 
-    // Explicit check for amount value
-    if (ingredient.amount > 0) {
-      // Just set to 0
-      updateIngredient(id, { amount: 0 });
-    } else {
-      // Show confirmation alert
-      Alert.alert(
-        'Remove Item?',
-        `Are you sure you want to remove "${ingredient.name}"?`,
-        [
-          {
-            text: 'Cancel',
-            onPress: () => {},
-            style: 'cancel',
+    // Show confirmation alert
+    Alert.alert(
+      'Remove Item?',
+      `Are you sure you want to remove "${ingredient.name}"?`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            try {
+              await removeIngredient(id);
+              // Sync will happen via useEffect
+            } catch (error) {
+              Alert.alert('Error', 'Failed to remove ingredient. Please try again.');
+            }
           },
-          {
-            text: 'Delete',
-            onPress: () => {
-              removeIngredient(id);
-            },
-            style: 'destructive',
-          },
-        ]
-      );
-    }
-  }, [ingredients, updateIngredient, removeIngredient]);
+          style: 'destructive',
+        },
+      ]
+    );
+  }, [ingredients, removeIngredient]);
 
-  const handleToggleTool = useCallback((id: string) => {
-    setTools((prev: Tool[]) => {
-      const updated = prev.map((tool: Tool) =>
-        tool.id === id ? { ...tool, isChecked: !tool.isChecked } : tool
-      );
-      // Re-sort immediately
-      return updated.sort((a: Tool, b: Tool) => {
-        if (a.isChecked === b.isChecked) return 0;
-        return a.isChecked ? -1 : 1;
-      });
-    });
-  }, []);
+  const handleToggleTool = useCallback(async (toolId: string) => {
+    try {
+      const tool = toolsArray.find((t) => t.id === toolId);
+      if (tool) {
+        await toggleKitchenTool(tool.name);
+        // Sync will happen via useEffect
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update tool. Please try again.');
+    }
+  }, [toolsArray, toggleKitchenTool]);
+
+  const handleUpdateIngredientAmount = useCallback(async (id: string, newAmount: number) => {
+    try {
+      // Parse as number and validate
+      const parsedAmount = typeof newAmount === 'string' ? parseFloat(newAmount) : newAmount;
+      if (!isNaN(parsedAmount) && parsedAmount >= 0) {
+        await updateIngredientAmount(id, parsedAmount);
+        // Sync will happen via useEffect
+      } else {
+        Alert.alert('Invalid Amount', 'Please enter a valid number.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update ingredient amount. Please try again.');
+    }
+  }, [updateIngredientAmount]);
+
+  const handleUpdateIngredientUnit = useCallback(async (id: string, newUnit: string) => {
+    try {
+      if (newUnit.trim()) {
+        await updateIngredientUnit(id, newUnit);
+        // Sync will happen via useEffect
+      } else {
+        Alert.alert('Invalid Unit', 'Please enter a valid unit.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update ingredient unit. Please try again.');
+    }
+  }, [updateIngredientUnit]);
 
   const handleGenerateRecipe = useCallback(() => {
+    if (ingredients.length === 0) {
+      Alert.alert('No Ingredients', 'Please add some ingredients to generate a recipe.');
+      return;
+    }
+
     setIsLoading(true);
-    // Simulate AI processing
-    setTimeout(() => {
-      setIsLoading(false);
-      // Navigate to recipes results
-      navigation?.navigate(RouteNames.RecipeResults);
-    }, APP_CONSTANTS.RECIPE_GENERATION_DELAY);
-  }, [navigation]);
+    
+    // Trigger AI recipe generation
+    const generateAndNavigate = async () => {
+      try {
+        await useRecipeStore.getState().generateRecipes(user?.uid || '');
+      } catch (error) {
+        console.error('Error generating recipes:', error);
+        Alert.alert('Generation Failed', 'Failed to generate recipes. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+
+      // Simulate AI processing
+      setTimeout(() => {
+        setIsLoading(false);
+        // Navigate to recipes results
+        navigation?.navigate(RouteNames.Recipes as any);
+      }, APP_CONSTANTS.RECIPE_GENERATION_DELAY);
+    };
+
+    generateAndNavigate();
+  }, [ingredients.length, navigation, user?.uid]);
 
   return (
     <>
@@ -208,17 +264,11 @@ export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
                       flex={1}
                       showsVerticalScrollIndicator={true}
                       renderItem={(item: Ingredient) => (
-                        <IngredientRow
-                          label={item.name}
-                          amount={item.amount}
-                          unit={item.unit}
+                        <IngredientListItem
+                          item={item}
                           onDelete={() => handleDeleteIngredient(item.id)}
-                          onAmountChange={(newAmount) => {
-                            updateIngredient(item.id, { amount: newAmount });
-                          }}
-                          onUnitChange={(newUnit) => {
-                            updateIngredient(item.id, { unit: newUnit });
-                          }}
+                          onAmountChange={(id, amount) => handleUpdateIngredientAmount(id, amount)}
+                          onUnitChange={(id, unit) => handleUpdateIngredientUnit(id, unit)}
                         />
                       )}
                     />
@@ -229,7 +279,7 @@ export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
                     <PantrySection
                       title="KITCHEN TOOLS"
                       placeholder="+ Add tool..."
-                      data={sortedTools}
+                      data={toolsArray}
                       onAddItem={handleAddTool}
                       flex={1}
                       showsVerticalScrollIndicator={true}
@@ -272,3 +322,4 @@ export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
 };
 
 export default PantryScreen;
+

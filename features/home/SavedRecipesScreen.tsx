@@ -13,6 +13,7 @@ import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 import { RouteNames } from '../../navigation/routeNames';
 import { useRecipeStore } from '../../store/useRecipeStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { Recipe } from '../../models/Recipe';
 import { APP_CONSTANTS } from '../../core/constants/appConstants';
 
@@ -87,6 +88,7 @@ const filterRecipesByCategory = (recipes: Recipe[], category: string | null): Re
 export const SavedRecipesScreen: React.FC<SavedRecipesScreenProps> = ({
   navigation,
 }) => {
+  const { user } = useAuthStore();
   const { savedRecipes, toggleSave, isRecipeSaved } = useRecipeStore();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -96,9 +98,11 @@ export const SavedRecipesScreen: React.FC<SavedRecipesScreenProps> = ({
     [savedRecipes, selectedCategory]
   );
 
-  const handleRemoveRecipe = useCallback((recipe: Recipe) => {
-    toggleSave(recipe);
-  }, [toggleSave]);
+  const handleRemoveRecipe = useCallback(async (recipe: Recipe) => {
+    if (user?.uid) {
+      await toggleSave(user.uid, recipe);
+    }
+  }, [toggleSave, user?.uid]);
 
   const handleRecipePress = useCallback(
     (recipeId: string) => {

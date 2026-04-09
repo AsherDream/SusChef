@@ -4,6 +4,8 @@ import { RouteNames } from './routeNames';
 import { RootStackParamList } from './types'; 
 import { LandingPage } from '../features/landing/LandingPage';
 import LoginScreen from '../features/auth/LoginScreen';
+import RegisterScreen from '../features/auth/RegisterScreen';
+import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
 import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -33,7 +35,19 @@ export default function AppNavigator() {
         options={{ headerShown: false }}
       />
 
-      {/* 3. The Main App (Tab Level) */}
+      <Stack.Screen
+        name={RouteNames.Register}
+        component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name={RouteNames.ForgotPassword}
+        component={ForgotPasswordScreen}
+        options={{ headerShown: false }}
+      />
+
+      {/* 2. The Main App (Tab Level) */}
       <Stack.Screen
         name={RouteNames.MainApp} 
         component={TabNavigator}
