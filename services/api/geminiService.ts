@@ -62,23 +62,13 @@ Respond with ONLY the JSON array, nothing else.`;
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey.trim()}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt,
-                },
-              ],
-            },
-          ],
-        }),
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
       }
     );
 
@@ -89,11 +79,9 @@ Respond with ONLY the JSON array, nothing else.`;
     }
 
     const data = await response.json();
+    const rawText = data.candidates[0].content.parts[0].text;
 
-    // Extract the text content from Gemini's response
-    const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!textContent) {
+    if (!rawText) {
       throw new Error('No text content in Gemini response');
     }
 
@@ -101,7 +89,7 @@ Respond with ONLY the JSON array, nothing else.`;
     let recipes: Recipe[];
     try {
       // Remove markdown code blocks if present
-      let jsonString = textContent.trim();
+      let jsonString = rawText.trim();
       if (jsonString.startsWith('```json')) {
         jsonString = jsonString.replace(/^```json\n?/, '').replace(/\n?```$/, '');
       } else if (jsonString.startsWith('```')) {
@@ -110,7 +98,7 @@ Respond with ONLY the JSON array, nothing else.`;
       
       recipes = JSON.parse(jsonString);
     } catch (parseError) {
-      console.error('Failed to parse Gemini response:', textContent);
+      console.error('Failed to parse Gemini response:', rawText);
       throw new Error('Failed to parse recipe JSON from AI response');
     }
 
