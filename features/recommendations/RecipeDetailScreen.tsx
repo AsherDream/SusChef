@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,9 +14,10 @@ import { IngredientItem } from '../../components/IngredientItem';
 import { InstructionStep } from '../../components/InstructionStep';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
-import { MOCK_RECIPES } from '../../core/constants/mockRecipes';
 import { getRecipeImage } from '../../core/utils/imageHelper';
 import { useRecipeStore } from '../../store/useRecipeStore';
+import { recipeApiService } from '../../services/api/recipeApiService';
+import { Recipe } from '../../models/Recipe';
 
 interface RecipeDetailScreenProps {
   navigation: any;
@@ -121,13 +122,52 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
   route,
 }) => {
   const recipeId = route.params?.recipeId;
-  const recipe = useMemo(
-    () => MOCK_RECIPES.find((r) => r.id === recipeId) || MOCK_RECIPES[0],
-    [recipeId]
-  );
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [isLoadingRecipe, setIsLoadingRecipe] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRecipe = async () => {
+      setIsLoadingRecipe(true);
+
+      const aiRecipe = useRecipeStore
+        .getState()
+        .generatedRecipes.find((r) => r.id === recipeId);
+
+      if (aiRecipe) {
+        if (isMounted) {
+          setRecipe(aiRecipe);
+          setIsLoadingRecipe(false);
+        }
+        return;
+      }
+
+      try {
+        const fallbackRecipe = await recipeApiService.getRecipeById(recipeId);
+        if (isMounted) {
+          setRecipe(fallbackRecipe);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setRecipe(null);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingRecipe(false);
+        }
+      }
+    };
+
+    loadRecipe();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [recipeId]);
 
   const { isRecipeSaved, toggleSave } = useRecipeStore();
-  const isSaved = isRecipeSaved(recipe.id);
+  const isSaved = recipe ? isRecipeSaved(recipe.id) : false;
 
   const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>(
     'ingredients'
@@ -145,6 +185,26 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
     }
     setCheckedIngredients(newChecked);
   };
+
+  if (isLoadingRecipe) {
+    return (
+      <SafeAreaView style={styles.safeArea} edges={['top']}>
+        <View style={styles.contentContainer}>
+          <Text style={styles.title}>Loading recipe...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!recipe) {
+    return (
+      <SafeAreaView style={styles.safeArea} edges={['top']}>
+        <View style={styles.contentContainer}>
+          <Text style={styles.title}>Recipe not found</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>

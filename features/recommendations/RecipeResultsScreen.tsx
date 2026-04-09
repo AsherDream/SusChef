@@ -91,7 +91,7 @@ export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
   navigation,
 }) => {
   const { user } = useAuthStore();
-  const { generatedRecipes, isGenerating, error, generateRecipes, clearRecipes } =
+  const { generatedRecipes, isGenerating, error, generateRecipes } =
     useRecipeStore();
 
   // Generate recipes on mount if not already generated
@@ -99,11 +99,6 @@ export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
     if (generatedRecipes.length === 0 && !isGenerating && user?.uid) {
       generateRecipes(user.uid);
     }
-
-    // Cleanup on unmount
-    return () => {
-      clearRecipes();
-    };
   }, []);
 
   const handleRecipePress = useCallback(

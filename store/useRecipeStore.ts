@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, StorageValue } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Recipe } from '../models/Recipe';
 import { generateRecipesFromPantry } from '../services/api/geminiService';
@@ -22,10 +22,6 @@ interface RecipeStore {
   generateRecipes: (userId: string) => Promise<void>;
   clearRecipes: () => void;
   setError: (error: string | null) => void;
-}
-
-interface StorageState {
-  state: RecipeStore;
 }
 
 export const useRecipeStore = create<RecipeStore>()(
@@ -120,32 +116,8 @@ export const useRecipeStore = create<RecipeStore>()(
       },
     }),
     {
-      name: 'recipe-store',
-      storage: {
-        getItem: async (key: string) => {
-          try {
-            const item = await AsyncStorage.getItem(key);
-            return item ? JSON.parse(item) : null;
-          } catch (error) {
-            console.error('Failed to read from AsyncStorage:', error);
-            return null;
-          }
-        },
-        setItem: async (key: string, value: StorageValue<RecipeStore>) => {
-          try {
-            await AsyncStorage.setItem(key, JSON.stringify(value));
-          } catch (error) {
-            console.error('Failed to write to AsyncStorage:', error);
-          }
-        },
-        removeItem: async (key: string) => {
-          try {
-            await AsyncStorage.removeItem(key);
-          } catch (error) {
-            console.error('Failed to remove from AsyncStorage:', error);
-          }
-        },
-      },
+      name: 'recipe-storage',
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );
