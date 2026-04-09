@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
 import { ArrowLeft } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RecipeCard } from '../../components/RecipeCard';
-import { useAuthStore } from '../../store/useAuthStore';
+import { Button } from '../../components/Button';
 import { useRecipeStore } from '../../store/useRecipeStore';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
@@ -19,7 +19,6 @@ interface RecipeResultsScreenProps {
   navigation: any;
 }
 
-// Move styles outside component
 const createStyles = () => StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -63,11 +62,18 @@ const createStyles = () => StyleSheet.create({
     marginTop: layout.spacing.md,
     textAlign: 'center',
   },
-  emptyText: {
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: layout.spacing.xl,
+  },
+  emptyStateText: {
     fontSize: typography.size.body,
     color: colors.text.secondary,
     textAlign: 'center',
-    marginTop: layout.spacing.xl,
+    marginBottom: layout.spacing.lg,
+    paddingHorizontal: layout.spacing.lg,
   },
   errorContainer: {
     paddingHorizontal: layout.spacing.lg,
@@ -90,14 +96,12 @@ const styles = createStyles();
 export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
   navigation,
 }) => {
-  const { user } = useAuthStore();
-  const { generatedRecipes, isGenerating, error, generateRecipes } =
-    useRecipeStore();
+  const { generatedRecipes, isGenerating, error, clearRecipes } = useRecipeStore();
 
-  // Generate recipes on mount if not already generated
-  useEffect(() => {
-    if (generatedRecipes.length === 0 && !isGenerating && user?.uid) {
-      generateRecipes(user.uid);
+  // Clear ghost error state on mount if no recipes exist
+  React.useEffect(() => {
+    if (generatedRecipes.length === 0 && error) {
+      clearRecipes();
     }
   }, []);
 
@@ -110,6 +114,10 @@ export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
 
   const handleBack = useCallback(() => {
     navigation.goBack();
+  }, [navigation]);
+
+  const handleGoToPantry = useCallback(() => {
+    navigation.navigate('Pantry');
   }, [navigation]);
 
   return (
@@ -157,12 +165,18 @@ export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
               onPress={() => handleRecipePress(recipe.id)}
             />
           ))
-        ) : (
-          !isGenerating &&
-          !error && (
-            <Text style={styles.emptyText}>No recipes found</Text>
-          )
-        )}
+        ) : !isGenerating ? (
+          <View style={styles.emptyStateContainer}>
+            <Text style={styles.emptyStateText}>
+              No recipes generated yet! Head over to your Pantry, select your ingredients, and let Chef Gemini cook something up.
+            </Text>
+            <Button
+              text="Go to Pantry"
+              onPress={handleGoToPantry}
+              variant="primary"
+            />
+          </View>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );

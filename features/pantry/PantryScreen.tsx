@@ -22,6 +22,7 @@ import { RouteNames } from '../../navigation/routeNames';
 import { PantryStackParamList } from '../../navigation/types';
 import { usePantryStore, type Ingredient } from '../../store/usePantryStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useRecipeStore } from '../../store/useRecipeStore';
 import { APP_CONSTANTS } from '../../core/constants/appConstants';
 import { Tool } from '../../models/Tool';
 
@@ -212,13 +213,28 @@ export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
     }
 
     setIsLoading(true);
-    // Simulate AI processing
-    setTimeout(() => {
-      setIsLoading(false);
-      // Navigate to recipes results
-      navigation?.navigate(RouteNames.RecipeResults);
-    }, APP_CONSTANTS.RECIPE_GENERATION_DELAY);
-  }, [ingredients.length, navigation]);
+    
+    // Trigger AI recipe generation
+    const generateAndNavigate = async () => {
+      try {
+        await useRecipeStore.getState().generateRecipes(user?.uid || '');
+      } catch (error) {
+        console.error('Error generating recipes:', error);
+        Alert.alert('Generation Failed', 'Failed to generate recipes. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+
+      // Simulate AI processing
+      setTimeout(() => {
+        setIsLoading(false);
+        // Navigate to recipes results
+        navigation?.navigate(RouteNames.Recipes as any);
+      }, APP_CONSTANTS.RECIPE_GENERATION_DELAY);
+    };
+
+    generateAndNavigate();
+  }, [ingredients.length, navigation, user?.uid]);
 
   return (
     <>

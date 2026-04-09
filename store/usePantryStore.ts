@@ -7,6 +7,9 @@ import { create } from 'zustand';
 import { saveUserPantry, getUserPantry, type PantryData, type Ingredient } from '../services/api/pantryService';
 import { useAuthStore } from './useAuthStore';
 
+// Debounce timer for cloud sync to prevent race conditions on rapid updates
+let syncTimeout: NodeJS.Timeout;
+
 interface PantryState extends PantryData {
   // Actions
   addIngredient: (name: string, quantity?: number, unit?: string) => Promise<void>;
@@ -147,15 +150,21 @@ export const usePantryStore = create<PantryState>()(
         }
       },
 
-      // Sync pantry to Firestore
+      // Sync pantry to Firestore (debounced to prevent race conditions)
       syncPantryToCloud: async (userId: string) => {
         try {
-          const state = get();
-          await saveUserPantry(userId, {
-            ingredients: state.ingredients,
-            kitchenTools: state.kitchenTools,
-          });
-          console.log('Pantry synced to Firestore');
+          // Clear existing timeout to prevent overlapping writes
+          if (syncTimeout) clearTimeout(syncTimeout);
+
+          // Debounce: batch rapid updates into a single write after 500ms of no activity
+          syncTimeout = setTimeout(async () => {
+            const state = get();
+            await saveUserPantry(userId, {
+              ingredients: state.ingredients,
+              kitchenTools: state.kitchenTools,
+            });
+            console.log('Pantry synced to Firestore');
+          }, 500);
         } catch (error) {
           console.error('Error syncing pantry to cloud:', error);
           // Silently fail - app continues to work offline

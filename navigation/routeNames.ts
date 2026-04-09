@@ -6,6 +6,8 @@ export enum RouteNames {
   MainApp = 'MainApp',
   Pantry = 'Pantry',
   PantryScreen = 'PantryScreen',
+  Recipes = 'Recipes',
+  RecipeResultsScreen = 'RecipeResultsScreen',
   Saved = 'Saved',
   Profile = 'Profile',
   ProfileScreen = 'ProfileScreen',

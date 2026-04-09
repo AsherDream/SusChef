@@ -3,17 +3,19 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Recipe } from '../models/Recipe';
 import { generateRecipesFromPantry } from '../services/api/geminiService';
+import { recipeApiService } from '../services/api/recipeApiService';
 import { useAuthStore } from './useAuthStore';
 import { usePantryStore } from './usePantryStore';
 
 interface RecipeStore {
   // Saved recipes
   savedRecipes: Recipe[];
-  toggleSave: (recipe: Recipe) => void;
+  toggleSave: (userId: string, recipe: Recipe) => Promise<void>;
   isRecipeSaved: (recipeId: string) => boolean;
   getSavedRecipes: () => Recipe[];
   setSavedRecipes: (recipes: Recipe[]) => void;
   removeRecipe: (recipeId: string) => void;
+  fetchSavedRecipes: (userId: string) => Promise<void>;
   
   // AI-generated recipes
   generatedRecipes: Recipe[];
@@ -30,21 +32,40 @@ export const useRecipeStore = create<RecipeStore>()(
       // Saved recipes state
       savedRecipes: [],
 
-      toggleSave: (recipe: Recipe) => {
-        set((state) => {
-          const isSaved = state.savedRecipes.some((r) => r.id === recipe.id);
-          if (isSaved) {
-            // Remove the recipe
-            return {
-              savedRecipes: state.savedRecipes.filter((r) => r.id !== recipe.id),
-            };
-          } else {
-            // Add the recipe
-            return {
-              savedRecipes: [...state.savedRecipes, recipe],
-            };
-          }
-        });
+      toggleSave: async (userId: string, recipe: Recipe) => {
+        const { savedRecipes } = get();
+        const isSaved = savedRecipes.some((r) => r.id === recipe.id);
+
+        // Optimistic update
+        if (isSaved) {
+          set({
+            savedRecipes: savedRecipes.filter((r) => r.id !== recipe.id),
+          });
+        } else {
+          set({
+            savedRecipes: [...savedRecipes, recipe],
+          });
+        }
+
+        // Sync with Firestore
+        try {
+          await recipeApiService.toggleSavedRecipe(userId, recipe, !isSaved);
+        } catch (error) {
+          // Revert optimistic update on error
+          set({ savedRecipes });
+          console.error('Failed to sync bookmark to Firestore:', error);
+          throw error;
+        }
+      },
+
+      fetchSavedRecipes: async (userId: string) => {
+        try {
+          const recipes = await recipeApiService.getSavedRecipes(userId);
+          set({ savedRecipes: recipes });
+        } catch (error) {
+          console.error('Failed to fetch saved recipes:', error);
+          throw error;
+        }
       },
 
       removeRecipe: (recipeId: string) => {
@@ -117,7 +138,9 @@ export const useRecipeStore = create<RecipeStore>()(
     }),
     {
       name: 'recipe-storage',
-      storage: createJSONStorage(() => AsyncStorage),
-    }
+      storage: createJSONStorage(() => AsyncStorage),      partialize: (state) => ({
+        generatedRecipes: state.generatedRecipes,
+        savedRecipes: state.savedRecipes,
+      }),    }
   )
 );

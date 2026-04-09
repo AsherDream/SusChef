@@ -5,6 +5,8 @@
 import { Recipe } from '../../models/Recipe';
 import { MOCK_RECIPES } from '../../core/constants/mockRecipes';
 import { API_CONFIG } from '../../core/config/apiConfig';
+import { db } from '../../core/config/firebaseConfig';
+import { collection, doc, setDoc, deleteDoc, getDocs, query, limit } from 'firebase/firestore';
 
 // Simulate API delay to properly trigger loading states
 const SIMULATED_API_DELAY = 1500; // ms
@@ -143,6 +145,63 @@ class RecipeApiService {
     } catch (error) {
       console.error('Error rating recipe:', error);
       throw new Error('Failed to rate recipe');
+    }
+  }
+
+  /**
+   * Toggle saved recipe in Firestore
+   * Saves or removes a recipe from user's savedRecipes subcollection
+   */
+  async toggleSavedRecipe(userId: string, recipe: Recipe, isSaving: boolean): Promise<void> {
+    try {
+      const recipeRef = doc(db, 'users', userId, 'savedRecipes', recipe.id);
+      
+      if (isSaving) {
+        // Save recipe to Firestore
+        await setDoc(recipeRef, {
+          id: recipe.id,
+          title: recipe.title,
+          description: recipe.description,
+          image: recipe.image,
+          time: recipe.time,
+          difficulty: recipe.difficulty,
+          servings: recipe.servings,
+          ingredients: recipe.ingredients,
+          instructions: recipe.instructions,
+          matchScore: recipe.matchScore,
+          savedAt: new Date().toISOString(),
+        });
+        console.log('✓ Recipe saved to Firestore:', recipe.id);
+      } else {
+        // Remove recipe from Firestore
+        await deleteDoc(recipeRef);
+        console.log('✓ Recipe removed from Firestore:', recipe.id);
+      }
+    } catch (error) {
+      console.error('Error toggling saved recipe:', error);
+      throw new Error('Failed to update saved recipe');
+    }
+  }
+
+  /**
+   * Get all saved recipes for a user from Firestore
+   */
+  async getSavedRecipes(userId: string): Promise<Recipe[]> {
+    try {
+      const savedRecipesRef = collection(db, 'users', userId, 'savedRecipes');
+      const q = query(savedRecipesRef, limit(100));
+      const querySnapshot = await getDocs(q);
+      
+      const recipes: Recipe[] = [];
+      querySnapshot.forEach((docSnapshot) => {
+        recipes.push(docSnapshot.data() as Recipe);
+      });
+      
+      console.log(`✓ Fetched ${recipes.length} saved recipes from Firestore`);
+      return recipes;
+    } catch (error) {
+      console.error('Error fetching saved recipes:', error);
+      throw new Error('Failed to fetch saved recipes');
     }
   }
 }

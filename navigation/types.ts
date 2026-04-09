@@ -11,9 +11,14 @@ export type RootStackParamList = {
 // 2. Types for the inner Tabs
 export type TabParamList = {
   [RouteNames.Pantry]: undefined;
+  [RouteNames.Recipes]: undefined;
   [RouteNames.Saved]: undefined;
   [RouteNames.Profile]: undefined;
-  [RouteNames.RecipeResults]: undefined;
+  [RouteNames.RecipeDetail]: { recipeId: string };
+};
+
+export type RecipesStackParamList = {
+  [RouteNames.RecipeResultsScreen]: undefined;
   [RouteNames.RecipeDetail]: { recipeId: string };
 };
 

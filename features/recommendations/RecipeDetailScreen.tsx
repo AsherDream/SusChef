@@ -16,6 +16,7 @@ import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 import { getRecipeImage } from '../../core/utils/imageHelper';
 import { useRecipeStore } from '../../store/useRecipeStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { recipeApiService } from '../../services/api/recipeApiService';
 import { Recipe } from '../../models/Recipe';
 
@@ -124,6 +125,10 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
   const recipeId = route.params?.recipeId;
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoadingRecipe, setIsLoadingRecipe] = useState(true);
+  const [isSavingRecipe, setIsSavingRecipe] = useState(false);
+
+  const { user } = useAuthStore();
+  const { savedRecipes, toggleSave } = useRecipeStore();
 
   useEffect(() => {
     let isMounted = true;
@@ -166,8 +171,23 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
     };
   }, [recipeId]);
 
-  const { isRecipeSaved, toggleSave } = useRecipeStore();
-  const isSaved = recipe ? isRecipeSaved(recipe.id) : false;
+  const isSaved = recipe ? savedRecipes.some(r => r.id === recipe.id) : false;
+
+  const handleSavePress = async () => {
+    if (!recipe || !user?.uid) {
+      console.log('Cannot save: recipe or user not available');
+      return;
+    }
+
+    setIsSavingRecipe(true);
+    try {
+      await toggleSave(user.uid, recipe);
+    } catch (error) {
+      console.error('Error saving recipe:', error);
+    } finally {
+      setIsSavingRecipe(false);
+    }
+  };
 
   const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>(
     'ingredients'
@@ -232,7 +252,8 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
             <Text style={styles.title}>{recipe.title}</Text>
             <Pressable
               style={styles.heartButton}
-              onPress={() => toggleSave(recipe)}
+              onPress={handleSavePress}
+              disabled={isSavingRecipe}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Heart
