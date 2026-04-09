@@ -113,13 +113,6 @@ export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
     });
   }, [kitchenTools]);
 
-  // Sync pantry to cloud when ingredients or kitchenTools change
-  useEffect(() => {
-    if (user?.uid) {
-      syncPantryToCloud(user.uid);
-    }
-  }, [ingredients, kitchenTools, user?.uid, syncPantryToCloud]);
-
   const handleAddIngredient = useCallback(async (name: string) => {
     if (name.trim()) {
       try {

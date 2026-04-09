@@ -31,50 +31,36 @@ export const generateRecipesFromPantry = async (
     ? `IMPORTANT: Exclude these allergens: ${allergies.join(', ')}. Do not include these in any recipe.`
     : 'The user has no known allergies.';
 
-  const prompt = `You are a professional chef and nutritionist. A user has the following ingredients available: ${ingredientsList}.
+  const prompt = `
+Available: ${ingredientsList}
+Avoid: ${allergyNote}
 
-${allergyNote}
-
-Based on these ingredients and constraints, generate exactly 3 delicious, practical recipes that the user can make TODAY. Each recipe must:
-1. Use ONLY the available ingredients
-2. NOT contain any of the excluded allergens
-3. Be achievable in a home kitchen
-4. Be realistic and tasty
-
-Return ONLY a valid JSON array (no markdown, no explanation, just raw JSON) with exactly this structure for each recipe:
-[
-  {
-    "id": "unique_id_string",
-    "title": "Recipe Name",
-    "time": 30,
-    "difficulty": "Easy" or "Medium" or "Hard",
-    "servings": 2,
-    "ingredients": ["ingredient 1 with amount", "ingredient 2 with amount"],
-    "instructions": ["step 1", "step 2", "step 3"],
-    "description": "Short 1-2 sentence description",
-    "matchScore": 8,
-    "totalItems": 10,
-    "image": null
-  }
-]
-
-Respond with ONLY the JSON array, nothing else.`;
+Generate exactly 3 practical recipes as a JSON array.
+Each recipe MUST have these exact keys:
+id (string), title (string), time (number), difficulty (string), servings (number), ingredients (array of strings), instructions (array of strings), description (string), matchScore (number), totalItems (number), image (null).
+`;
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey.trim()}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey.trim()}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseMimeType: 'application/json' },
+        }),
       }
     );
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Gemini API error:', errorData);
+      const errorText = await response.text();
+      console.error('Gemini API error:', response.status, response.statusText, errorText);
+      if (response.status === 503) {
+        throw new Error('Chef Gemini is experiencing high traffic right now. Please tap Generate again in a few seconds!');
+      }
       throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
     }
 
@@ -88,15 +74,7 @@ Respond with ONLY the JSON array, nothing else.`;
     // Parse the JSON response
     let recipes: Recipe[];
     try {
-      // Remove markdown code blocks if present
-      let jsonString = rawText.trim();
-      if (jsonString.startsWith('```json')) {
-        jsonString = jsonString.replace(/^```json\n?/, '').replace(/\n?```$/, '');
-      } else if (jsonString.startsWith('```')) {
-        jsonString = jsonString.replace(/^```\n?/, '').replace(/\n?```$/, '');
-      }
-      
-      recipes = JSON.parse(jsonString);
+      recipes = JSON.parse(rawText);
     } catch (parseError) {
       console.error('Failed to parse Gemini response:', rawText);
       throw new Error('Failed to parse recipe JSON from AI response');

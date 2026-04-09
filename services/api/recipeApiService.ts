@@ -98,8 +98,8 @@ class RecipeApiService {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, SIMULATED_API_DELAY));
       
-      // Return top recipes by match score from mock data
-      return MOCK_RECIPES
+      // Return top recipes by match score from mock data (shallow copy to avoid mutating global array)
+      return [...MOCK_RECIPES]
         .sort((a, b) => b.matchScore - a.matchScore)
         .slice(0, limit);
     } catch (error) {

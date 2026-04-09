@@ -4,9 +4,8 @@
  */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { saveUserPantry, getUserPantry, type PantryData, type Ingredient } from '../services/api/pantryService';
+import { useAuthStore } from './useAuthStore';
 
 interface PantryState extends PantryData {
   // Actions
@@ -21,8 +20,7 @@ interface PantryState extends PantryData {
 }
 
 export const usePantryStore = create<PantryState>()(
-  persist(
-    (set, get) => ({
+  (set, get) => ({
       // Initial state
       ingredients: [],
       kitchenTools: [],
@@ -43,8 +41,10 @@ export const usePantryStore = create<PantryState>()(
 
         // Sync to cloud in background
         try {
-          const state = get();
-          // We'll get userId from somewhere in the component, but for now just log
+          const userId = useAuthStore.getState().user?.uid;
+          if (userId) {
+            await get().syncPantryToCloud(userId);
+          }
           console.log('Ingredient added:', newIngredient);
         } catch (error) {
           console.error('Error adding ingredient:', error);
@@ -60,6 +60,10 @@ export const usePantryStore = create<PantryState>()(
 
         // Sync to cloud in background
         try {
+          const userId = useAuthStore.getState().user?.uid;
+          if (userId) {
+            await get().syncPantryToCloud(userId);
+          }
           console.log('Ingredient removed:', id);
         } catch (error) {
           console.error('Error removing ingredient:', error);
@@ -83,6 +87,10 @@ export const usePantryStore = create<PantryState>()(
 
         // Sync to cloud in background
         try {
+          const userId = useAuthStore.getState().user?.uid;
+          if (userId) {
+            await get().syncPantryToCloud(userId);
+          }
           console.log('Ingredient amount updated:', id, 'to', newAmount);
         } catch (error) {
           console.error('Error updating ingredient amount:', error);
@@ -106,6 +114,10 @@ export const usePantryStore = create<PantryState>()(
 
         // Sync to cloud in background
         try {
+          const userId = useAuthStore.getState().user?.uid;
+          if (userId) {
+            await get().syncPantryToCloud(userId);
+          }
           console.log('Ingredient unit updated:', id, 'to', newUnit);
         } catch (error) {
           console.error('Error updating ingredient unit:', error);
@@ -125,6 +137,10 @@ export const usePantryStore = create<PantryState>()(
 
         // Sync to cloud in background
         try {
+          const userId = useAuthStore.getState().user?.uid;
+          if (userId) {
+            await get().syncPantryToCloud(userId);
+          }
           console.log('Kitchen tool toggled:', toolName);
         } catch (error) {
           console.error('Error toggling kitchen tool:', error);
@@ -170,17 +186,7 @@ export const usePantryStore = create<PantryState>()(
       clearPantry: () => {
         set({ ingredients: [], kitchenTools: [] });
       },
-    }),
-    {
-      name: 'pantry-store',
-      storage: createJSONStorage(() => AsyncStorage),
-      // Only persist ingredients and kitchenTools, not functions
-      partialize: (state) => ({
-        ingredients: state.ingredients,
-        kitchenTools: state.kitchenTools,
-      }),
-    }
-  )
+    })
 );
 
 // Export types for use in components
