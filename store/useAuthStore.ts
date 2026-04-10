@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logout as firebaseLogout } from '../services/api/authService';
 import { saveUserProfile, getUserProfile } from '../services/api/userService';
+import { usePantryStore } from './usePantryStore';
+import { useRecipeStore } from './useRecipeStore';
 
 interface AuthUser {
   uid: string;
@@ -21,6 +24,7 @@ interface AuthState {
   setLoading: (isLoading: boolean) => void;
   updateProfile: (allergies: string[], pdpaConsent: boolean) => Promise<void>;
   fetchAndSetProfile: (userId: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -79,6 +83,27 @@ export const useAuthStore = create<AuthState>()(
           console.error('Error fetching user profile:', error);
           // Don't throw - silently fail and use local defaults
           // User can still use the app with default values
+        }
+      },
+
+      logout: async () => {
+        try {
+          // Call Firebase logout
+          await firebaseLogout();
+
+          // Clear auth state
+          set({ user: null });
+
+          // Clear pantry data (prevent next user from seeing previous user's ingredients)
+          usePantryStore.getState().clearPantry();
+
+          // Clear recipe data (prevent next user from seeing previous user's recipes)
+          useRecipeStore.getState().clearRecipes();
+
+          console.log('✓ Auth store cleared, all user data removed');
+        } catch (error) {
+          console.error('Error during logout:', error);
+          throw error;
         }
       },
     }),

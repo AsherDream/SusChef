@@ -136,13 +136,14 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
     const loadRecipe = async () => {
       setIsLoadingRecipe(true);
 
-      const aiRecipe = useRecipeStore
-        .getState()
-        .generatedRecipes.find((r) => r.id === recipeId);
+      // Check both AI-generated and saved recipes locally
+      const state = useRecipeStore.getState();
+      const localRecipe = state.generatedRecipes.find((r) => r.id === recipeId) || 
+                          state.savedRecipes.find((r) => r.id === recipeId);
 
-      if (aiRecipe) {
+      if (localRecipe) {
         if (isMounted) {
-          setRecipe(aiRecipe);
+          setRecipe(localRecipe);
           setIsLoadingRecipe(false);
         }
         return;

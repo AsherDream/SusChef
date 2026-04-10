@@ -7,52 +7,68 @@ import LoginScreen from '../features/auth/LoginScreen';
 import RegisterScreen from '../features/auth/RegisterScreen';
 import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
 import TabNavigator from './TabNavigator';
+import { useAuthStore } from '../store/useAuthStore';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function AppNavigator() {
+/**
+ * Auth Navigator - Screens shown to unauthenticated users
+ * Includes: Landing, Login, Sign Up, Forgot Password
+ */
+function AuthNavigator() {
   return (
-    // Note: No <NavigationContainer> here! It's already in App.tsx.
     <Stack.Navigator
       initialRouteName={RouteNames.Landing}
       screenOptions={{
-        headerStyle: { backgroundColor: '#4CAF50' },
-        headerTintColor: '#fff',
-        headerTitleStyle: { fontWeight: 'bold' },
+        headerShown: false,
       }}
     >
-      {/* 1. Landing Screen (Onboarding) */}
       <Stack.Screen
         name={RouteNames.Landing}
         component={LandingPage}
-        options={{ headerShown: false }}
       />
-
-      {/* 2. Login Screen (Authentication) */}
       <Stack.Screen
         name={RouteNames.Login}
         component={LoginScreen}
-        options={{ headerShown: false }}
       />
-
       <Stack.Screen
         name={RouteNames.Register}
         component={RegisterScreen}
-        options={{ headerShown: false }}
       />
-
       <Stack.Screen
         name={RouteNames.ForgotPassword}
         component={ForgotPasswordScreen}
-        options={{ headerShown: false }}
-      />
-
-      {/* 2. The Main App (Tab Level) */}
-      <Stack.Screen
-        name={RouteNames.MainApp} 
-        component={TabNavigator}
-        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
+}
+
+/**
+ * App Navigator - Screens shown to authenticated users
+ * Includes: Main app tabs, settings, etc
+ */
+function AppStackNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen
+        name={RouteNames.MainApp}
+        component={TabNavigator}
+      />
+    </Stack.Navigator>
+  );
+}
+
+/**
+ * Root Navigator - Protected routing that conditionally renders
+ * Auth Navigator or App Navigator based on authentication state
+ */
+export default function RootNavigator() {
+  const { user } = useAuthStore();
+  const isAuthenticated = !!user;
+
+  return isAuthenticated ? <AppStackNavigator /> : <AuthNavigator />;
 }

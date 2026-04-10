@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, StyleSheet, Alert, TouchableOpacity, FlatList } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Alert, TouchableOpacity, FlatList, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileHeader } from '../../components/profile/ProfileHeader';
@@ -27,7 +27,8 @@ const COMMON_ALLERGIES = ['Peanuts', 'Dairy', 'Gluten', 'Shellfish', 'Soy', 'Egg
 export function ProfileScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const colors = useThemeColors();
-  const { user, updateProfile } = useAuthStore();
+  const { user, updateProfile, logout } = useAuthStore();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const {
     toggleTheme,
     dietaryStyle,
@@ -87,8 +88,21 @@ export function ProfileScreen() {
     }
   };
 
-  const handleLogout = () => {
-    navigation.reset({ index: 0, routes: [{ name: RouteNames.Login as never }] });
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout();
+      // Firebase auth listener in App.tsx will handle navigation
+    } catch (error) {
+      setIsLoggingOut(false);
+      console.error('Logout error:', error);
+      // Fallback web-compatible alert
+      if (Platform.OS === 'web') {
+        window.alert('Failed to log out. Please try again.');
+      } else {
+        Alert.alert('Logout Failed', 'Failed to logout. Please try again.');
+      }
+    }
   };
 
   const handleResetPassword = () => {
