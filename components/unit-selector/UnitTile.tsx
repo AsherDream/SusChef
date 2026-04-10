@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Pressable,
-  Text,
-  StyleSheet,
-  View,
-  Platform,
-  Vibration,
-} from 'react-native';
+import { Pressable, Text, StyleSheet, View, Platform, Vibration } from 'react-native';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 

@@ -12,7 +12,7 @@ interface IngredientListItemProps {
 /**
  * Memoized ingredient list item component
  * Only re-renders when ingredient data changes, not on parent re-renders
- * 
+ *
  * Performance: ~80% fewer re-renders using React.memo with custom comparison
  */
 const IngredientListItem = React.memo<IngredientListItemProps>(

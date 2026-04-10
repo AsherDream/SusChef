@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Pressable,
-  Text,
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  Platform,
-} from 'react-native';
+import { Pressable, Text, View, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { colors } from '../core/theme/colors';
 import { layout, typography } from '../core/theme/typography';
 
@@ -120,8 +113,7 @@ export const Button: React.FC<ButtonProps> = ({
     return size === 'md' ? styles.mdButton : styles.lgButton;
   };
 
-  const textColor =
-    variant === 'ghost' ? colors.primary : colors.surface;
+  const textColor = variant === 'ghost' ? colors.primary : colors.surface;
 
   return (
     <Pressable
@@ -135,10 +127,7 @@ export const Button: React.FC<ButtonProps> = ({
       ]}
     >
       {isLoading ? (
-        <ActivityIndicator
-          size="small"
-          color={textColor}
-        />
+        <ActivityIndicator size="small" color={textColor} />
       ) : (
         <>
           {icon && <View>{icon}</View>}

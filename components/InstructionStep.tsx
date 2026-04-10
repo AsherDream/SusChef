@@ -8,10 +8,7 @@ interface InstructionStepProps {
   instruction: string;
 }
 
-export const InstructionStep: React.FC<InstructionStepProps> = ({
-  stepNumber,
-  instruction,
-}) => {
+export const InstructionStep: React.FC<InstructionStepProps> = ({ stepNumber, instruction }) => {
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'row',

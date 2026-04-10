@@ -54,9 +54,7 @@ export const ToolRow: React.FC<ToolRowProps> = ({
   });
 
   const rightContent = (
-    <View style={styles.checkbox}>
-      {isChecked && <Text style={styles.checkmark}>✓</Text>}
-    </View>
+    <View style={styles.checkbox}>{isChecked && <Text style={styles.checkmark}>✓</Text>}</View>
   );
 
   return (

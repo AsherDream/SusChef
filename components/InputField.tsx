@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, Pressable } from 'react-native';
-import {
-  Eye,
-  EyeOff,
-  Search,
-  Mail,
-  Lock,
-  User,
-  Plus,
-} from 'lucide-react-native';
+import { Eye, EyeOff, Search, Mail, Lock, User, Plus } from 'lucide-react-native';
 import { colors } from '../core/theme/colors';
 import { layout, typography } from '../core/theme/typography';
 
@@ -96,16 +88,8 @@ export const InputField: React.FC<InputFieldProps> = ({
           onBlur={() => setIsFocused(false)}
         />
         {IconComponent && (
-          <Pressable
-            style={styles.iconButton}
-            onPress={onIconPress}
-            disabled={!onIconPress}
-          >
-            <IconComponent
-              size={layout.icon.md}
-              color={colors.text.secondary}
-              strokeWidth={2}
-            />
+          <Pressable style={styles.iconButton} onPress={onIconPress} disabled={!onIconPress}>
+            <IconComponent size={layout.icon.md} color={colors.text.secondary} strokeWidth={2} />
           </Pressable>
         )}
       </View>

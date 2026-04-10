@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, StyleSheet, Alert, TouchableOpacity, FlatList, Platform } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  FlatList,
+  Platform,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileHeader } from '../../components/profile/ProfileHeader';
@@ -29,12 +38,7 @@ export function ProfileScreen() {
   const colors = useThemeColors();
   const { user, updateProfile, logout } = useAuthStore();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const {
-    toggleTheme,
-    dietaryStyle,
-    setDietaryStyle,
-    isDarkMode,
-  } = useAppStore();
+  const { toggleTheme, dietaryStyle, setDietaryStyle, isDarkMode } = useAppStore();
 
   // Local state for allergies and consent (before saving to store)
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>(user?.allergies || []);
@@ -45,15 +49,13 @@ export function ProfileScreen() {
   const displayName = user?.displayName || 'Chef';
   const userEmail = user?.email || 'No email';
 
-  const handleDietToggle = (diet: typeof diets[number]) => {
+  const handleDietToggle = (diet: (typeof diets)[number]) => {
     setDietaryStyle(dietaryStyle === diet ? '' : diet);
   };
 
   const toggleAllergy = (allergy: string) => {
     setSelectedAllergies((prev) =>
-      prev.includes(allergy)
-        ? prev.filter((a) => a !== allergy)
-        : [...prev, allergy]
+      prev.includes(allergy) ? prev.filter((a) => a !== allergy) : [...prev, allergy]
     );
   };
 
@@ -110,7 +112,10 @@ export function ProfileScreen() {
   };
 
   return (
-    <ScrollView style={[styles.screen, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={[styles.screen, { backgroundColor: colors.background }]}
+      contentContainerStyle={styles.content}
+    >
       {/* User Profile Header */}
       <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
         <ProfileHeader name={displayName} email={userEmail} />
@@ -159,9 +164,7 @@ export function ProfileScreen() {
                 style={[
                   styles.allergyText,
                   {
-                    color: selectedAllergies.includes(allergy)
-                      ? '#fff'
-                      : colors.text.primary,
+                    color: selectedAllergies.includes(allergy) ? '#fff' : colors.text.primary,
                   },
                 ]}
               >
@@ -198,9 +201,7 @@ export function ProfileScreen() {
               ]}
               onPress={() => setPdpaConsent(!pdpaConsent)}
             >
-              {pdpaConsent && (
-                <Text style={styles.checkmark}>✓</Text>
-              )}
+              {pdpaConsent && <Text style={styles.checkmark}>✓</Text>}
             </TouchableOpacity>
             <Text style={[styles.consentText, { color: colors.text.primary }]}>
               I consent to SusChef processing my allergy data.
@@ -222,20 +223,14 @@ export function ProfileScreen() {
           onPress={handleSavePreferences}
           disabled={!canSavePreferences() || isSaving}
         >
-          <Text style={styles.saveButtonText}>
-            {isSaving ? 'Saving...' : 'Save Preferences'}
-          </Text>
+          <Text style={styles.saveButtonText}>{isSaving ? 'Saving...' : 'Save Preferences'}</Text>
         </TouchableOpacity>
       ) : null}
 
       {/* Existing App Settings */}
       <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
         <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>App Settings</Text>
-        <PreferenceToggle
-          label="Dark Mode"
-          isEnabled={isDarkMode}
-          onToggle={toggleTheme}
-        />
+        <PreferenceToggle label="Dark Mode" isEnabled={isDarkMode} onToggle={toggleTheme} />
         <SettingRow
           iconName="settings"
           label="Settings Details"

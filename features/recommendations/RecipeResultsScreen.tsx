@@ -1,12 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RecipeCard } from '../../components/RecipeCard';
@@ -19,83 +12,82 @@ interface RecipeResultsScreenProps {
   navigation: any;
 }
 
-const createStyles = () => StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: layout.spacing.lg,
-    paddingVertical: layout.spacing.md,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  backButton: {
-    marginRight: layout.spacing.md,
-  },
-  title: {
-    fontSize: typography.size.h2,
-    fontWeight: '700' as const,
-    color: colors.text.primary,
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: layout.spacing.lg,
-    paddingTop: layout.spacing.lg,
-    paddingBottom: layout.spacing.xl,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: layout.spacing.xl,
-  },
-  loadingText: {
-    fontSize: typography.size.body,
-    color: colors.text.secondary,
-    marginTop: layout.spacing.md,
-    textAlign: 'center',
-  },
-  emptyStateContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: layout.spacing.xl,
-  },
-  emptyStateText: {
-    fontSize: typography.size.body,
-    color: colors.text.secondary,
-    textAlign: 'center',
-    marginBottom: layout.spacing.lg,
-    paddingHorizontal: layout.spacing.lg,
-  },
-  errorContainer: {
-    paddingHorizontal: layout.spacing.lg,
-    paddingVertical: layout.spacing.md,
-    marginTop: layout.spacing.lg,
-    backgroundColor: '#FDE8E8',
-    borderRadius: layout.radius.md,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.status.error,
-  },
-  errorText: {
-    fontSize: typography.size.body,
-    color: colors.status.error,
-    fontWeight: '600' as const,
-  },
-});
+const createStyles = () =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      flex: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: layout.spacing.lg,
+      paddingVertical: layout.spacing.md,
+      backgroundColor: colors.surface,
+      borderBottomWidth: 1,
+      borderBottomColor: '#F0F0F0',
+    },
+    backButton: {
+      marginRight: layout.spacing.md,
+    },
+    title: {
+      fontSize: typography.size.h2,
+      fontWeight: '700' as const,
+      color: colors.text.primary,
+      flex: 1,
+    },
+    content: {
+      paddingHorizontal: layout.spacing.lg,
+      paddingTop: layout.spacing.lg,
+      paddingBottom: layout.spacing.xl,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: layout.spacing.xl,
+    },
+    loadingText: {
+      fontSize: typography.size.body,
+      color: colors.text.secondary,
+      marginTop: layout.spacing.md,
+      textAlign: 'center',
+    },
+    emptyStateContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: layout.spacing.xl,
+    },
+    emptyStateText: {
+      fontSize: typography.size.body,
+      color: colors.text.secondary,
+      textAlign: 'center',
+      marginBottom: layout.spacing.lg,
+      paddingHorizontal: layout.spacing.lg,
+    },
+    errorContainer: {
+      paddingHorizontal: layout.spacing.lg,
+      paddingVertical: layout.spacing.md,
+      marginTop: layout.spacing.lg,
+      backgroundColor: '#FDE8E8',
+      borderRadius: layout.radius.md,
+      borderLeftWidth: 4,
+      borderLeftColor: colors.status.error,
+    },
+    errorText: {
+      fontSize: typography.size.body,
+      color: colors.status.error,
+      fontWeight: '600' as const,
+    },
+  });
 
 const styles = createStyles();
 
-export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
-  navigation,
-}) => {
+export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({ navigation }) => {
   const { generatedRecipes, isGenerating, error, clearRecipes } = useRecipeStore();
 
   // Clear ghost error state on mount if no recipes exist
@@ -141,10 +133,7 @@ export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
         {/* Loading State */}
         {isGenerating && (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator
-              size="large"
-              color={colors.primary}
-            />
+            <ActivityIndicator size="large" color={colors.primary} />
             <Text style={styles.loadingText}>Chef Gemini is thinking...</Text>
           </View>
         )}
@@ -168,13 +157,10 @@ export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({
         ) : !isGenerating ? (
           <View style={styles.emptyStateContainer}>
             <Text style={styles.emptyStateText}>
-              No recipes generated yet! Head over to your Pantry, select your ingredients, and let Chef Gemini cook something up.
+              No recipes generated yet! Head over to your Pantry, select your ingredients, and let
+              Chef Gemini cook something up.
             </Text>
-            <Button
-              text="Go to Pantry"
-              onPress={handleGoToPantry}
-              variant="primary"
-            />
+            <Button text="Go to Pantry" onPress={handleGoToPantry} variant="primary" />
           </View>
         ) : null}
       </ScrollView>

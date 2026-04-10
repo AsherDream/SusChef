@@ -3,20 +3,14 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable"
-    ],
+    "lib": ["esnext", "dom", "dom.iterable"],
     "allowJs": true,
     "jsx": "react-native",
     "noEmit": true,
     "isolatedModules": true,
     "strict": true,
     "moduleResolution": "bundler",
-    "customConditions": [
-      "react-native"
-    ],
+    "customConditions": ["react-native"],
     "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
     "esModuleInterop": true,
@@ -26,11 +20,6 @@
     "baseUrl": ".",
     "ignoreDeprecations": "6.0"
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

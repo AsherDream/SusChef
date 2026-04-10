@@ -64,11 +64,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.icon}>
-        <IconComponent
-          size={48}
-          stroke={colors.text.disabled}
-          strokeWidth={1.5}
-        />
+        <IconComponent size={48} stroke={colors.text.disabled} strokeWidth={1.5} />
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.message}>{message}</Text>

@@ -82,12 +82,7 @@ export const UnitSelectorModal: React.FC<UnitSelectorModalProps> = ({
   const isConfirmDisabled = selectedUnit === currentUnit;
 
   return (
-    <Modal
-      visible={isVisible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={onClose}
-    >
+    <Modal visible={isVisible} animationType="slide" transparent={true} onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
         <Pressable
           style={[styles.sheet, { maxHeight }]}
@@ -122,10 +117,7 @@ export const UnitSelectorModal: React.FC<UnitSelectorModalProps> = ({
           {/* Fixed Footer */}
           <View style={styles.footer}>
             <Pressable
-              style={[
-                styles.confirmButton,
-                isConfirmDisabled && styles.confirmButtonDisabled,
-              ]}
+              style={[styles.confirmButton, isConfirmDisabled && styles.confirmButtonDisabled]}
               onPress={handleConfirm}
             >
               <Text style={styles.confirmButtonText}>Confirm</Text>

@@ -23,13 +23,15 @@ export const generateRecipesFromPantry = async (
     );
   }
 
-  const ingredientsList = ingredients.length > 0 
-    ? ingredients.join(', ') 
-    : 'common pantry staples (oil, salt, pepper, rice, pasta)';
-  
-  const allergyNote = allergies.length > 0
-    ? `IMPORTANT: Exclude these allergens: ${allergies.join(', ')}. Do not include these in any recipe.`
-    : 'The user has no known allergies.';
+  const ingredientsList =
+    ingredients.length > 0
+      ? ingredients.join(', ')
+      : 'common pantry staples (oil, salt, pepper, rice, pasta)';
+
+  const allergyNote =
+    allergies.length > 0
+      ? `IMPORTANT: Exclude these allergens: ${allergies.join(', ')}. Do not include these in any recipe.`
+      : 'The user has no known allergies.';
 
   const prompt = `
 Available: ${ingredientsList}
@@ -59,7 +61,9 @@ id (string), title (string), time (number), difficulty (string), servings (numbe
       const errorText = await response.text();
       console.error('Gemini API error:', response.status, response.statusText, errorText);
       if (response.status === 503) {
-        throw new Error('Chef Gemini is experiencing high traffic right now. Please tap Generate again in a few seconds!');
+        throw new Error(
+          'Chef Gemini is experiencing high traffic right now. Please tap Generate again in a few seconds!'
+        );
       }
       throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
     }

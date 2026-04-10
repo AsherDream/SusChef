@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { BookOpen } from 'lucide-react-native';
 import { EmptyState } from '../EmptyState';
 import { Button } from '../Button';
@@ -13,9 +10,7 @@ interface EmptyCookbookProps {
   onNavigateToPantry: () => void;
 }
 
-export const EmptyCookbook: React.FC<EmptyCookbookProps> = ({
-  onNavigateToPantry,
-}) => {
+export const EmptyCookbook: React.FC<EmptyCookbookProps> = ({ onNavigateToPantry }) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -49,13 +44,7 @@ export const EmptyCookbook: React.FC<EmptyCookbookProps> = ({
           onPress={onNavigateToPantry}
           variant="primary"
           size="lg"
-          icon={
-            <BookOpen
-              size={20}
-              stroke={colors.surface}
-              strokeWidth={2}
-            />
-          }
+          icon={<BookOpen size={20} stroke={colors.surface} strokeWidth={2} />}
         />
       </View>
     </View>

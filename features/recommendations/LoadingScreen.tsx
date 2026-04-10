@@ -1,10 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-} from 'react-native';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { ChefHat } from 'lucide-react-native';
 import { colors } from '../../core/theme/colors';
 import { typography } from '../../core/theme/typography';

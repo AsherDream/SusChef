@@ -38,7 +38,10 @@ export function SettingRow({ iconName, label, onPress, isDestructive }: SettingR
   const tint = isDestructive ? colors.status.error : colors.text.primary;
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.container, pressed && styles.pressed]}> 
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+    >
       <View style={styles.left}>
         <Icon size={22} color={tint} />
         <Text style={[styles.label, { color: tint }]}>{label}</Text>

@@ -79,19 +79,25 @@ export const useAuthForm = (): UseAuthFormReturn => {
     setShowPassword((prev) => !prev);
   }, []);
 
-  const setEmail = useCallback((value: string) => {
-    setEmailState(value);
-    if (error) {
-      setError(null);
-    }
-  }, [error]);
+  const setEmail = useCallback(
+    (value: string) => {
+      setEmailState(value);
+      if (error) {
+        setError(null);
+      }
+    },
+    [error]
+  );
 
-  const setPassword = useCallback((value: string) => {
-    setPasswordState(value);
-    if (error) {
-      setError(null);
-    }
-  }, [error]);
+  const setPassword = useCallback(
+    (value: string) => {
+      setPasswordState(value);
+      if (error) {
+        setError(null);
+      }
+    },
+    [error]
+  );
 
   const validateCredentials = useCallback((): boolean => {
     const trimmedEmail = email.trim();
@@ -119,17 +125,20 @@ export const useAuthForm = (): UseAuthFormReturn => {
     return true;
   }, [email, password]);
 
-  const withLoading = useCallback(async (action: () => Promise<boolean>): Promise<boolean> => {
-    setIsLoading(true);
-    setAuthLoading(true);
+  const withLoading = useCallback(
+    async (action: () => Promise<boolean>): Promise<boolean> => {
+      setIsLoading(true);
+      setAuthLoading(true);
 
-    try {
-      return await action();
-    } finally {
-      setIsLoading(false);
-      setAuthLoading(false);
-    }
-  }, [setAuthLoading]);
+      try {
+        return await action();
+      } finally {
+        setIsLoading(false);
+        setAuthLoading(false);
+      }
+    },
+    [setAuthLoading]
+  );
 
   const handleLogin = useCallback(async (): Promise<boolean> => {
     if (!validateCredentials()) {
@@ -167,28 +176,32 @@ export const useAuthForm = (): UseAuthFormReturn => {
     });
   }, [email, password, setUser, validateCredentials, withLoading]);
 
-  const handleSocialLogin = useCallback(async (provider: SocialProvider): Promise<boolean> => {
-    return withLoading(async () => {
-      try {
-        if (Platform.OS !== 'web') {
-          setError(`${provider === 'google' ? 'Google' : 'Facebook'} login is not configured for native yet.`);
+  const handleSocialLogin = useCallback(
+    async (provider: SocialProvider): Promise<boolean> => {
+      return withLoading(async () => {
+        try {
+          if (Platform.OS !== 'web') {
+            setError(
+              `${provider === 'google' ? 'Google' : 'Facebook'} login is not configured for native yet.`
+            );
+            return false;
+          }
+
+          const socialProvider =
+            provider === 'google' ? new GoogleAuthProvider() : new FacebookAuthProvider();
+
+          const result = await signInWithPopup(auth, socialProvider);
+          setUser(toStoreUser(result.user));
+          setError(null);
+          return true;
+        } catch (err) {
+          setError(mapAuthError(err));
           return false;
         }
-
-        const socialProvider = provider === 'google'
-          ? new GoogleAuthProvider()
-          : new FacebookAuthProvider();
-
-        const result = await signInWithPopup(auth, socialProvider);
-        setUser(toStoreUser(result.user));
-        setError(null);
-        return true;
-      } catch (err) {
-        setError(mapAuthError(err));
-        return false;
-      }
-    });
-  }, [setUser, withLoading]);
+      });
+    },
+    [setUser, withLoading]
+  );
 
   return {
     email,

@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  Pressable,
-  StyleSheet,
-} from 'react-native';
+import { View, Text, ScrollView, Image, Pressable, StyleSheet } from 'react-native';
 import { ArrowLeft, Heart } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TabSwitcher } from '../../components/TabSwitcher';
@@ -26,102 +19,100 @@ interface RecipeDetailScreenProps {
 }
 
 // Move styles outside component
-const createStyles = () => StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  container: {
-    flex: 1,
-  },
-  imageContainer: {
-    position: 'relative',
-    height: 288,
-    backgroundColor: '#E0E0E0',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  backButton: {
-    position: 'absolute',
-    top: layout.spacing.md,
-    left: layout.spacing.md,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
-  },
-  contentContainer: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: layout.radius.lg,
-    borderTopRightRadius: layout.radius.lg,
-    marginTop: -24,
-    paddingHorizontal: layout.spacing.lg,
-    paddingTop: layout.spacing.xl,
-    paddingBottom: layout.spacing.xl,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    marginBottom: layout.spacing.md,
-  },
-  title: {
-    fontSize: typography.size.h1,
-    fontWeight: '700' as const,
-    color: colors.text.primary,
-    flex: 1,
-    marginRight: layout.spacing.md,
-  },
-  heartButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#F5F5F5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  metadata: {
-    flexDirection: 'row',
-    gap: layout.spacing.lg,
-    marginBottom: layout.spacing.lg,
-    paddingBottom: layout.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  metadataItem: {
-    flexDirection: 'column',
-    gap: 4,
-  },
-  metadataLabel: {
-    fontSize: typography.size.caption,
-    color: colors.text.secondary,
-    textTransform: 'uppercase',
-    fontWeight: '600' as const,
-  },
-  metadataValue: {
-    fontSize: typography.size.body,
-    color: colors.text.primary,
-    fontWeight: '700' as const,
-  },
-  ingredientsList: {
-    gap: layout.spacing.sm,
-  },
-  instructionsList: {
-    gap: layout.spacing.sm,
-  },
-});
+const createStyles = () =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      flex: 1,
+    },
+    imageContainer: {
+      position: 'relative',
+      height: 288,
+      backgroundColor: '#E0E0E0',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
+    backButton: {
+      position: 'absolute',
+      top: layout.spacing.md,
+      left: layout.spacing.md,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 10,
+    },
+    contentContainer: {
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: layout.radius.lg,
+      borderTopRightRadius: layout.radius.lg,
+      marginTop: -24,
+      paddingHorizontal: layout.spacing.lg,
+      paddingTop: layout.spacing.xl,
+      paddingBottom: layout.spacing.xl,
+    },
+    headerContent: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+      marginBottom: layout.spacing.md,
+    },
+    title: {
+      fontSize: typography.size.h1,
+      fontWeight: '700' as const,
+      color: colors.text.primary,
+      flex: 1,
+      marginRight: layout.spacing.md,
+    },
+    heartButton: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: '#F5F5F5',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    metadata: {
+      flexDirection: 'row',
+      gap: layout.spacing.lg,
+      marginBottom: layout.spacing.lg,
+      paddingBottom: layout.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: '#F0F0F0',
+    },
+    metadataItem: {
+      flexDirection: 'column',
+      gap: 4,
+    },
+    metadataLabel: {
+      fontSize: typography.size.caption,
+      color: colors.text.secondary,
+      textTransform: 'uppercase',
+      fontWeight: '600' as const,
+    },
+    metadataValue: {
+      fontSize: typography.size.body,
+      color: colors.text.primary,
+      fontWeight: '700' as const,
+    },
+    ingredientsList: {
+      gap: layout.spacing.sm,
+    },
+    instructionsList: {
+      gap: layout.spacing.sm,
+    },
+  });
 
 const styles = createStyles();
 
-export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
-  navigation,
-  route,
-}) => {
+export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ navigation, route }) => {
   const recipeId = route.params?.recipeId;
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoadingRecipe, setIsLoadingRecipe] = useState(true);
@@ -138,8 +129,9 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
 
       // Check both AI-generated and saved recipes locally
       const state = useRecipeStore.getState();
-      const localRecipe = state.generatedRecipes.find((r) => r.id === recipeId) || 
-                          state.savedRecipes.find((r) => r.id === recipeId);
+      const localRecipe =
+        state.generatedRecipes.find((r) => r.id === recipeId) ||
+        state.savedRecipes.find((r) => r.id === recipeId);
 
       if (localRecipe) {
         if (isMounted) {
@@ -172,7 +164,7 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
     };
   }, [recipeId]);
 
-  const isSaved = recipe ? savedRecipes.some(r => r.id === recipe.id) : false;
+  const isSaved = recipe ? savedRecipes.some((r) => r.id === recipe.id) : false;
 
   const handleSavePress = async () => {
     if (!recipe || !user?.uid) {
@@ -190,12 +182,8 @@ export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({
     }
   };
 
-  const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>(
-    'ingredients'
-  );
-  const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(
-    new Set()
-  );
+  const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
+  const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(new Set());
 
   const toggleIngredient = (ingredient: string) => {
     const newChecked = new Set(checkedIngredients);

@@ -8,24 +8,25 @@ import { RouteNames } from '../../navigation/routeNames';
 
 type HomeScreenProps = NativeStackScreenProps<TabParamList, typeof RouteNames.Pantry>;
 
-const createStyles = () => StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.background,
-  },
-  title: {
-    fontSize: typography.size.h1,
-    fontWeight: '700' as const,
-    color: colors.text.primary,
-    marginBottom: layout.spacing.md,
-  },
-  subtitle: {
-    fontSize: typography.size.body,
-    color: colors.text.secondary,
-  },
-});
+const createStyles = () =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+    },
+    title: {
+      fontSize: typography.size.h1,
+      fontWeight: '700' as const,
+      color: colors.text.primary,
+      marginBottom: layout.spacing.md,
+    },
+    subtitle: {
+      fontSize: typography.size.body,
+      color: colors.text.secondary,
+    },
+  });
 
 const styles = createStyles();
 

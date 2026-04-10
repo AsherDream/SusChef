@@ -19,7 +19,9 @@ export function MultiSelectTag({ label, isSelected, onPress }: MultiSelectTagPro
         pressed && styles.tagPressed,
       ]}
     >
-      <Text style={[styles.text, isSelected ? styles.textSelected : styles.textDefault]}>{label}</Text>
+      <Text style={[styles.text, isSelected ? styles.textSelected : styles.textDefault]}>
+        {label}
+      </Text>
     </Pressable>
   );
 }

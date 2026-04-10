@@ -8,10 +8,7 @@ interface TabSwitcherProps {
   onTabChange: (tab: 'ingredients' | 'instructions') => void;
 }
 
-export const TabSwitcher: React.FC<TabSwitcherProps> = ({
-  activeTab,
-  onTabChange,
-}) => {
+export const TabSwitcher: React.FC<TabSwitcherProps> = ({ activeTab, onTabChange }) => {
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'row',
@@ -48,12 +45,7 @@ export const TabSwitcher: React.FC<TabSwitcherProps> = ({
         style={[styles.tabButton, activeTab === 'ingredients' && styles.activeTab]}
         onPress={() => onTabChange('ingredients')}
       >
-        <Text
-          style={[
-            styles.tabText,
-            activeTab === 'ingredients' && styles.activeTabText,
-          ]}
-        >
+        <Text style={[styles.tabText, activeTab === 'ingredients' && styles.activeTabText]}>
           Ingredients
         </Text>
       </Pressable>
@@ -61,12 +53,7 @@ export const TabSwitcher: React.FC<TabSwitcherProps> = ({
         style={[styles.tabButton, activeTab === 'instructions' && styles.activeTab]}
         onPress={() => onTabChange('instructions')}
       >
-        <Text
-          style={[
-            styles.tabText,
-            activeTab === 'instructions' && styles.activeTabText,
-          ]}
-        >
+        <Text style={[styles.tabText, activeTab === 'instructions' && styles.activeTabText]}>
           Instructions
         </Text>
       </Pressable>

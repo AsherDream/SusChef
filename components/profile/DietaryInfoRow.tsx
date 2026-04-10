@@ -19,7 +19,7 @@ export function DietaryInfoRow({ label, description, isEnabled, onToggle }: Diet
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.surface }]}> 
+    <View style={[styles.container, { backgroundColor: colors.surface }]}>
       <Pressable style={styles.labelRow} onPress={handleInfo} hitSlop={8}>
         <Text style={[styles.label, { color: colors.text.primary }]}>{label}</Text>
         <HelpCircle size={18} color={colors.text.secondary} />

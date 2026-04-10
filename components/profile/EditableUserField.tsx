@@ -8,7 +8,12 @@ interface EditableUserFieldProps extends TextInputProps {
   label: string;
 }
 
-export function EditableUserField({ label, value, onChangeText, ...props }: EditableUserFieldProps) {
+export function EditableUserField({
+  label,
+  value,
+  onChangeText,
+  ...props
+}: EditableUserFieldProps) {
   const colors = useThemeColors();
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<TextInput>(null);
@@ -16,7 +21,15 @@ export function EditableUserField({ label, value, onChangeText, ...props }: Edit
   return (
     <View style={styles.container}>
       <Text style={[styles.label, { color: colors.text.secondary }]}>{label}</Text>
-      <View style={[styles.inputWrapper, { borderColor: focused ? colors.primary : colors.border, backgroundColor: colors.surface }]}>
+      <View
+        style={[
+          styles.inputWrapper,
+          {
+            borderColor: focused ? colors.primary : colors.border,
+            backgroundColor: colors.surface,
+          },
+        ]}
+      >
         <TextInput
           ref={inputRef}
           value={value}

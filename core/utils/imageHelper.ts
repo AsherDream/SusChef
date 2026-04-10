@@ -5,7 +5,8 @@
  */
 
 // High-quality generic food placeholder (fallback for recipes without images)
-const GENERIC_FOOD_PLACEHOLDER = 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=400&q=80';
+const GENERIC_FOOD_PLACEHOLDER =
+  'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=400&q=80';
 
 /**
  * Gets a recipe image with fallback to a generic placeholder

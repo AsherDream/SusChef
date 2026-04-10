@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
+import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 import { Trash2 } from 'lucide-react-native';
 import { BaseRow } from './BaseRow';
 import { UnitSelectorModal } from './UnitSelectorModal';
@@ -125,10 +119,7 @@ export const IngredientRow: React.FC<IngredientRowProps> = ({
               placeholderTextColor={colors.text.disabled}
               maxLength={5}
             />
-            <Pressable
-              style={styles.unitPill}
-              onPress={() => setIsModalVisible(true)}
-            >
+            <Pressable style={styles.unitPill} onPress={() => setIsModalVisible(true)}>
               <Text style={styles.unitText}>{unit}</Text>
             </Pressable>
           </>

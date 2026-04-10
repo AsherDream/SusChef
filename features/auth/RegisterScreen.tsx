@@ -21,74 +21,75 @@ import { useAuthForm } from './hooks/useAuthForm';
 
 type RegisterScreenProps = NativeStackScreenProps<RootStackParamList, typeof RouteNames.Register>;
 
-const createStyles = () => StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  container: {
-    flexGrow: 1,
-    paddingHorizontal: layout.spacing.lg,
-    paddingTop: layout.spacing.xl,
-    paddingBottom: layout.spacing.lg,
-  },
-  headerSection: {
-    alignItems: 'center',
-    marginBottom: layout.spacing.xl,
-  },
-  leafIcon: {
-    marginBottom: layout.spacing.md,
-  },
-  title: {
-    fontSize: typography.size.h1,
-    fontWeight: '700' as const,
-    color: colors.text.primary,
-    marginBottom: layout.spacing.sm,
-  },
-  subtitle: {
-    fontSize: typography.size.body,
-    color: colors.text.secondary,
-  },
-  formSection: {
-    marginBottom: layout.spacing.xl,
-  },
-  errorText: {
-    fontSize: typography.size.caption,
-    color: colors.status.error,
-    marginTop: -layout.spacing.sm,
-    marginBottom: layout.spacing.md,
-  },
-  registerButton: {
-    backgroundColor: colors.primary,
-    borderRadius: layout.radius.full,
-    paddingVertical: layout.spacing.md,
-    paddingHorizontal: layout.spacing.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: layout.spacing.lg,
-  },
-  registerButtonText: {
-    color: colors.surface,
-    fontSize: typography.size.body,
-    fontWeight: '700' as const,
-  },
-  loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: layout.spacing.sm,
-    marginTop: layout.spacing.lg,
-  },
-  loginText: {
-    fontSize: typography.size.body,
-    color: colors.text.secondary,
-  },
-  loginLink: {
-    fontSize: typography.size.body,
-    color: colors.primary,
-    fontWeight: '600' as const,
-  },
-});
+const createStyles = () =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      flexGrow: 1,
+      paddingHorizontal: layout.spacing.lg,
+      paddingTop: layout.spacing.xl,
+      paddingBottom: layout.spacing.lg,
+    },
+    headerSection: {
+      alignItems: 'center',
+      marginBottom: layout.spacing.xl,
+    },
+    leafIcon: {
+      marginBottom: layout.spacing.md,
+    },
+    title: {
+      fontSize: typography.size.h1,
+      fontWeight: '700' as const,
+      color: colors.text.primary,
+      marginBottom: layout.spacing.sm,
+    },
+    subtitle: {
+      fontSize: typography.size.body,
+      color: colors.text.secondary,
+    },
+    formSection: {
+      marginBottom: layout.spacing.xl,
+    },
+    errorText: {
+      fontSize: typography.size.caption,
+      color: colors.status.error,
+      marginTop: -layout.spacing.sm,
+      marginBottom: layout.spacing.md,
+    },
+    registerButton: {
+      backgroundColor: colors.primary,
+      borderRadius: layout.radius.full,
+      paddingVertical: layout.spacing.md,
+      paddingHorizontal: layout.spacing.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: layout.spacing.lg,
+    },
+    registerButtonText: {
+      color: colors.surface,
+      fontSize: typography.size.body,
+      fontWeight: '700' as const,
+    },
+    loginContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: layout.spacing.sm,
+      marginTop: layout.spacing.lg,
+    },
+    loginText: {
+      fontSize: typography.size.body,
+      color: colors.text.secondary,
+    },
+    loginLink: {
+      fontSize: typography.size.body,
+      color: colors.primary,
+      fontWeight: '600' as const,
+    },
+  });
 
 const styles = createStyles();
 
@@ -138,10 +139,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={styles.container}
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
           <View style={styles.headerSection}>
             <View style={styles.leafIcon}>
               <Leaf size={64} color={colors.primary} />

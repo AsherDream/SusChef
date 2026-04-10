@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  ScrollView,
-  Pressable,
-  Text,
-  StyleSheet,
-} from 'react-native';
+import { View, ScrollView, Pressable, Text, StyleSheet } from 'react-native';
 import { colors } from '../../core/theme/colors';
 import { layout, typography } from '../../core/theme/typography';
 
@@ -48,9 +42,7 @@ export const CookbookFilter: React.FC<CookbookFilterProps> = ({
 
   const getPillStyle = (isSelected: boolean) => ({
     ...styles.pill,
-    backgroundColor: isSelected
-      ? colors.primary
-      : `${colors.primary}22`, // ~13% opacity
+    backgroundColor: isSelected ? colors.primary : `${colors.primary}22`, // ~13% opacity
   });
 
   const getPillTextStyle = (isSelected: boolean) => ({
@@ -68,13 +60,8 @@ export const CookbookFilter: React.FC<CookbookFilterProps> = ({
       >
         <View style={styles.pillsContainer}>
           {/* "All" option */}
-          <Pressable
-            style={getPillStyle(selectedCategory === null)}
-            onPress={() => onSelect(null)}
-          >
-            <Text style={getPillTextStyle(selectedCategory === null)}>
-              All
-            </Text>
+          <Pressable style={getPillStyle(selectedCategory === null)} onPress={() => onSelect(null)}>
+            <Text style={getPillTextStyle(selectedCategory === null)}>All</Text>
           </Pressable>
 
           {/* Category pills */}
@@ -84,9 +71,7 @@ export const CookbookFilter: React.FC<CookbookFilterProps> = ({
               style={getPillStyle(selectedCategory === category)}
               onPress={() => onSelect(category)}
             >
-              <Text style={getPillTextStyle(selectedCategory === category)}>
-                {category}
-              </Text>
+              <Text style={getPillTextStyle(selectedCategory === category)}>{category}</Text>
             </Pressable>
           ))}
         </View>

@@ -1,11 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  Animated,
-} from 'react-native';
+import { View, Text, Pressable, StyleSheet, Animated } from 'react-native';
 import { Image } from 'expo-image';
 import { Heart, Clock } from 'lucide-react-native';
 import { colors } from '../../core/theme/colors';

@@ -6,7 +6,7 @@ export type RootStackParamList = {
   [RouteNames.Login]: undefined;
   [RouteNames.Register]: undefined;
   [RouteNames.ForgotPassword]: undefined;
-  [RouteNames.MainApp]: undefined; 
+  [RouteNames.MainApp]: undefined;
 };
 
 // 2. Types for the inner Tabs

@@ -23,7 +23,9 @@ export function AllergyManager() {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.inputRow, { backgroundColor: colors.surface, borderColor: colors.border }]}> 
+      <View
+        style={[styles.inputRow, { backgroundColor: colors.surface, borderColor: colors.border }]}
+      >
         <TextInput
           value={value}
           onChangeText={setValue}
@@ -31,14 +33,20 @@ export function AllergyManager() {
           placeholderTextColor={colors.text.secondary}
           style={[styles.input, { color: colors.text.primary }]}
         />
-        <Pressable onPress={handleAdd} style={({ pressed }) => [styles.addButton, { backgroundColor: colors.primary, opacity: pressed ? 0.9 : 1 }]}> 
+        <Pressable
+          onPress={handleAdd}
+          style={({ pressed }) => [
+            styles.addButton,
+            { backgroundColor: colors.primary, opacity: pressed ? 0.9 : 1 },
+          ]}
+        >
           <Plus size={18} color={colors.surface} />
         </Pressable>
       </View>
 
       <View style={styles.chipsContainer}>
         {allergies.map((item) => (
-          <View key={item} style={[styles.chip, { backgroundColor: colors.primary }]}> 
+          <View key={item} style={[styles.chip, { backgroundColor: colors.primary }]}>
             <Text style={[styles.chipText, { color: colors.surface }]}>{item}</Text>
             <Pressable onPress={() => toggleAllergy(item)} hitSlop={8}>
               <X size={14} color={colors.surface} />

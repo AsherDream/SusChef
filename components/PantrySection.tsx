@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  FlatList,
-  Text,
-  StyleSheet,
-} from 'react-native';
+import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { InputField } from './InputField';
 import { SectionHeader } from './SectionHeader';
 import { colors } from '../core/theme/colors';
@@ -71,9 +66,7 @@ export const PantrySection: React.FC<PantrySectionProps> = ({
         <View style={styles.listContainer}>
           <FlatList
             data={data}
-            renderItem={({ item, index }) => (
-              <View key={index}>{renderItem(item, index)}</View>
-            )}
+            renderItem={({ item, index }) => <View key={index}>{renderItem(item, index)}</View>}
             scrollEnabled={true}
             showsVerticalScrollIndicator={showsVerticalScrollIndicator}
             contentContainerStyle={{ paddingBottom: layout.spacing.md }}
@@ -82,20 +75,24 @@ export const PantrySection: React.FC<PantrySectionProps> = ({
         </View>
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={{
-            fontSize: typography.size.body,
-            color: colors.text.secondary,
-            fontWeight: '600' as const,
-            textAlign: 'center',
-          }}>
+          <Text
+            style={{
+              fontSize: typography.size.body,
+              color: colors.text.secondary,
+              fontWeight: '600' as const,
+              textAlign: 'center',
+            }}
+          >
             No items yet
           </Text>
-          <Text style={{
-            fontSize: typography.size.caption,
-            color: colors.text.disabled,
-            textAlign: 'center',
-            marginTop: layout.spacing.sm,
-          }}>
+          <Text
+            style={{
+              fontSize: typography.size.caption,
+              color: colors.text.disabled,
+              textAlign: 'center',
+              marginTop: layout.spacing.sm,
+            }}
+          >
             Add your first item to get started
           </Text>
         </View>

@@ -18,10 +18,7 @@ interface UserProfile {
  * @param data - User profile data (allergies and consent)
  * @returns Promise that resolves when data is saved
  */
-export const saveUserProfile = async (
-  userId: string,
-  data: UserProfile
-): Promise<void> => {
+export const saveUserProfile = async (userId: string, data: UserProfile): Promise<void> => {
   try {
     const userRef = doc(db, 'users', userId);
     await setDoc(

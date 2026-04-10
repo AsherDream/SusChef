@@ -59,10 +59,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
               <Text style={styles.errorText}>{this.state.error.toString()}</Text>
             )}
           </View>
-          <Pressable
-            style={styles.button}
-            onPress={this.resetError}
-          >
+          <Pressable style={styles.button} onPress={this.resetError}>
             <Text style={styles.buttonText}>Try Again</Text>
           </Pressable>
         </View>

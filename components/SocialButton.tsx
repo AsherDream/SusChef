@@ -1,12 +1,6 @@
 import React from 'react';
 import { Text, Pressable, StyleSheet, Platform } from 'react-native';
-import {
-  Chrome,
-  Facebook,
-  Apple,
-  Github,
-  Twitter,
-} from 'lucide-react-native';
+import { Chrome, Facebook, Apple, Github, Twitter } from 'lucide-react-native';
 import { colors } from '../core/theme/colors';
 import { layout, typography } from '../core/theme/typography';
 
@@ -72,16 +66,9 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.button,
-        pressed && styles.buttonPressed,
-      ]}
+      style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
     >
-      <IconComponent
-        size={layout.icon.md}
-        color={colors.text.primary}
-        strokeWidth={2}
-      />
+      <IconComponent size={layout.icon.md} color={colors.text.primary} strokeWidth={2} />
       <Text style={styles.text}>{title}</Text>
     </Pressable>
   );

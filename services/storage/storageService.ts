@@ -24,10 +24,7 @@ class StorageService {
    */
   async saveSavedRecipes(recipes: any[]): Promise<boolean> {
     try {
-      await AsyncStorage.setItem(
-        APP_CONSTANTS.STORAGE_KEYS.SAVED_RECIPES,
-        JSON.stringify(recipes)
-      );
+      await AsyncStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.SAVED_RECIPES, JSON.stringify(recipes));
       return true;
     } catch (error) {
       console.error('Error saving recipes:', error);

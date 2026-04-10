@@ -1,10 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GridRecipeCard } from '../../components/cookbook/GridRecipeCard';
 import { CookbookFilter } from '../../components/cookbook/CookbookFilter';
@@ -24,53 +19,54 @@ interface SavedRecipesScreenProps {
 const CATEGORIES = ['All', 'Breakfast', 'Lunch', 'Dinner'];
 
 // Move styles outside component
-const createStyles = () => StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  headerSection: {
-    paddingHorizontal: layout.spacing.lg,
-    paddingVertical: layout.spacing.md,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    alignItems: 'center',
-  },
-  header: {
-    fontSize: typography.size.h2,
-    fontWeight: '700' as const,
-    color: colors.text.primary,
-  },
-  flatList: {
-    flex: 1,
-  },
-  contentContainer: {
-    paddingHorizontal: layout.spacing.lg,
-    paddingTop: layout.spacing.lg,
-    paddingBottom: layout.spacing.xl,
-  },
-  columnWrapper: {
-    justifyContent: 'space-between',
-    marginBottom: layout.spacing.lg,
-    gap: layout.spacing.sm,
-  },
-  cardWrapper: {
-    width: '48%',
-  },
-});
+const createStyles = () =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    headerSection: {
+      paddingHorizontal: layout.spacing.lg,
+      paddingVertical: layout.spacing.md,
+      backgroundColor: colors.surface,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      alignItems: 'center',
+    },
+    header: {
+      fontSize: typography.size.h2,
+      fontWeight: '700' as const,
+      color: colors.text.primary,
+    },
+    flatList: {
+      flex: 1,
+    },
+    contentContainer: {
+      paddingHorizontal: layout.spacing.lg,
+      paddingTop: layout.spacing.lg,
+      paddingBottom: layout.spacing.xl,
+    },
+    columnWrapper: {
+      justifyContent: 'space-between',
+      marginBottom: layout.spacing.lg,
+      gap: layout.spacing.sm,
+    },
+    cardWrapper: {
+      width: '48%',
+    },
+  });
 
 const styles = createStyles();
 
 // Helper to categorize recipes based on recipe IDs
 const RECIPE_CATEGORIES: { [key: string]: string[] } = {
-  'Breakfast': ['1'],
-  'Lunch': ['2', '3'],
-  'Dinner': ['1', '2'],
+  Breakfast: ['1'],
+  Lunch: ['2', '3'],
+  Dinner: ['1', '2'],
 };
 
 /**
@@ -80,14 +76,10 @@ const filterRecipesByCategory = (recipes: Recipe[], category: string | null): Re
   if (!category || category === 'All') {
     return recipes;
   }
-  return recipes.filter((recipe: Recipe) =>
-    RECIPE_CATEGORIES[category]?.includes(recipe.id)
-  );
+  return recipes.filter((recipe: Recipe) => RECIPE_CATEGORIES[category]?.includes(recipe.id));
 };
 
-export const SavedRecipesScreen: React.FC<SavedRecipesScreenProps> = ({
-  navigation,
-}) => {
+export const SavedRecipesScreen: React.FC<SavedRecipesScreenProps> = ({ navigation }) => {
   const { user } = useAuthStore();
   const { savedRecipes, toggleSave, isRecipeSaved } = useRecipeStore();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -98,11 +90,14 @@ export const SavedRecipesScreen: React.FC<SavedRecipesScreenProps> = ({
     [savedRecipes, selectedCategory]
   );
 
-  const handleRemoveRecipe = useCallback(async (recipe: Recipe) => {
-    if (user?.uid) {
-      await toggleSave(user.uid, recipe);
-    }
-  }, [toggleSave, user?.uid]);
+  const handleRemoveRecipe = useCallback(
+    async (recipe: Recipe) => {
+      if (user?.uid) {
+        await toggleSave(user.uid, recipe);
+      }
+    },
+    [toggleSave, user?.uid]
+  );
 
   const handleRecipePress = useCallback(
     (recipeId: string) => {

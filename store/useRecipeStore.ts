@@ -16,7 +16,7 @@ interface RecipeStore {
   setSavedRecipes: (recipes: Recipe[]) => void;
   removeRecipe: (recipeId: string) => void;
   fetchSavedRecipes: (userId: string) => Promise<void>;
-  
+
   // AI-generated recipes
   generatedRecipes: Recipe[];
   isGenerating: boolean;
@@ -120,9 +120,7 @@ export const useRecipeStore = create<RecipeStore>()(
           console.log(`✓ Successfully generated ${recipes.length} recipes`);
         } catch (error) {
           const errorMessage =
-            error instanceof Error 
-              ? error.message 
-              : 'Failed to generate recipes';
+            error instanceof Error ? error.message : 'Failed to generate recipes';
           console.error('Error generating recipes:', errorMessage);
           set({ error: errorMessage, isGenerating: false });
         }
@@ -138,9 +136,11 @@ export const useRecipeStore = create<RecipeStore>()(
     }),
     {
       name: 'recipe-storage',
-      storage: createJSONStorage(() => AsyncStorage),      partialize: (state) => ({
+      storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({
         generatedRecipes: state.generatedRecipes,
         savedRecipes: state.savedRecipes,
-      }),    }
+      }),
+    }
   )
 );

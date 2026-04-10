@@ -28,19 +28,11 @@ export const BaseRow: React.FC<BaseRowProps> = ({
         style,
       ]}
     >
-      {leftIcon && (
-        <View style={{ marginRight: layout.spacing.md }}>
-          {leftIcon}
-        </View>
-      )}
+      {leftIcon && <View style={{ marginRight: layout.spacing.md }}>{leftIcon}</View>}
 
-      <View style={{ flex: 1 }}>
-        {label}
-      </View>
+      <View style={{ flex: 1 }}>{label}</View>
 
-      <View>
-        {rightContent}
-      </View>
+      <View>{rightContent}</View>
     </View>
   );
 

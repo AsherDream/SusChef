@@ -9,7 +9,6 @@ import { usePantryStore } from './store/usePantryStore';
 import { auth } from './core/config/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 
-
 export default function App() {
   const { setUser, checkAuthStatus, fetchAndSetProfile } = useAuthStore();
   const { fetchAndSetPantry, clearPantry } = usePantryStore();
@@ -32,9 +31,9 @@ export default function App() {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName || undefined, // Required for Social Auth
-          emailVerified: user.emailVerified,           // Required for Security Gate
-          allergies: [],                               // Initialize empty allergy list
-          pdpaConsent: false,                          // Default consent to false
+          emailVerified: user.emailVerified, // Required for Security Gate
+          allergies: [], // Initialize empty allergy list
+          pdpaConsent: false, // Default consent to false
         });
 
         // Fetch user profile data from Firestore (allergies, consent)

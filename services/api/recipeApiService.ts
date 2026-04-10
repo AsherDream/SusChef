@@ -19,21 +19,22 @@ class RecipeApiService {
   async getRecipeRecommendations(ingredients: string[]): Promise<Recipe[]> {
     try {
       console.log('Fetching recipes for ingredients:', ingredients);
-      
+
       // Simulate API delay to trigger loading UI
-      await new Promise(resolve => setTimeout(resolve, SIMULATED_API_DELAY));
-      
+      await new Promise((resolve) => setTimeout(resolve, SIMULATED_API_DELAY));
+
       // Filter mock recipes based on ingredients match
       if (ingredients.length === 0) {
         return MOCK_RECIPES;
       }
 
       // Return recipes that match at least one ingredient
-      return MOCK_RECIPES.filter(recipe =>
-        recipe.ingredients.some(ing =>
-          ingredients.some(userIng =>
-            ing.toLowerCase().includes(userIng.toLowerCase()) ||
-            userIng.toLowerCase().includes(ing.toLowerCase())
+      return MOCK_RECIPES.filter((recipe) =>
+        recipe.ingredients.some((ing) =>
+          ingredients.some(
+            (userIng) =>
+              ing.toLowerCase().includes(userIng.toLowerCase()) ||
+              userIng.toLowerCase().includes(ing.toLowerCase())
           )
         )
       );
@@ -50,12 +51,12 @@ class RecipeApiService {
   async getRecipeById(recipeId: string): Promise<Recipe | null> {
     try {
       console.log('Fetching recipe with ID:', recipeId);
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, SIMULATED_API_DELAY));
-      
+      await new Promise((resolve) => setTimeout(resolve, SIMULATED_API_DELAY));
+
       // Return recipe from mock data if found
-      return MOCK_RECIPES.find(recipe => recipe.id === recipeId) || null;
+      return MOCK_RECIPES.find((recipe) => recipe.id === recipeId) || null;
     } catch (error) {
       console.error('Error fetching recipe:', error);
       throw new Error('Failed to fetch recipe');
@@ -73,15 +74,16 @@ class RecipeApiService {
       }
 
       console.log('Searching recipes for:', query);
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, SIMULATED_API_DELAY));
-      
+      await new Promise((resolve) => setTimeout(resolve, SIMULATED_API_DELAY));
+
       // Search in title and description
       const lowerQuery = query.toLowerCase();
-      return MOCK_RECIPES.filter(recipe =>
-        recipe.title.toLowerCase().includes(lowerQuery) ||
-        recipe.description?.toLowerCase().includes(lowerQuery)
+      return MOCK_RECIPES.filter(
+        (recipe) =>
+          recipe.title.toLowerCase().includes(lowerQuery) ||
+          recipe.description?.toLowerCase().includes(lowerQuery)
       );
     } catch (error) {
       console.error('Error searching recipes:', error);
@@ -96,14 +98,12 @@ class RecipeApiService {
   async getTrendingRecipes(limit: number = 10): Promise<Recipe[]> {
     try {
       console.log('Fetching trending recipes');
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, SIMULATED_API_DELAY));
-      
+      await new Promise((resolve) => setTimeout(resolve, SIMULATED_API_DELAY));
+
       // Return top recipes by match score from mock data (shallow copy to avoid mutating global array)
-      return [...MOCK_RECIPES]
-        .sort((a, b) => b.matchScore - a.matchScore)
-        .slice(0, limit);
+      return [...MOCK_RECIPES].sort((a, b) => b.matchScore - a.matchScore).slice(0, limit);
     } catch (error) {
       console.error('Error fetching trending recipes:', error);
       throw new Error('Failed to fetch trending recipes');
@@ -117,10 +117,10 @@ class RecipeApiService {
   async saveRecipe(recipe: Recipe): Promise<boolean> {
     try {
       console.log('Saving recipe:', recipe.id);
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, SIMULATED_API_DELAY));
-      
+      await new Promise((resolve) => setTimeout(resolve, SIMULATED_API_DELAY));
+
       // TODO: Implement actual API call
       return true;
     } catch (error) {
@@ -136,10 +136,10 @@ class RecipeApiService {
   async rateRecipe(recipeId: string, rating: number, comment?: string): Promise<boolean> {
     try {
       console.log('Rating recipe:', recipeId, 'with rating:', rating);
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, SIMULATED_API_DELAY));
-      
+      await new Promise((resolve) => setTimeout(resolve, SIMULATED_API_DELAY));
+
       // TODO: Implement actual API call
       return true;
     } catch (error) {
@@ -155,7 +155,7 @@ class RecipeApiService {
   async toggleSavedRecipe(userId: string, recipe: Recipe, isSaving: boolean): Promise<void> {
     try {
       const recipeRef = doc(db, 'users', userId, 'savedRecipes', recipe.id);
-      
+
       if (isSaving) {
         // Save recipe to Firestore
         await setDoc(recipeRef, {
@@ -191,12 +191,12 @@ class RecipeApiService {
       const savedRecipesRef = collection(db, 'users', userId, 'savedRecipes');
       const q = query(savedRecipesRef, limit(100));
       const querySnapshot = await getDocs(q);
-      
+
       const recipes: Recipe[] = [];
       querySnapshot.forEach((docSnapshot) => {
         recipes.push(docSnapshot.data() as Recipe);
       });
-      
+
       console.log(`✓ Fetched ${recipes.length} saved recipes from Firestore`);
       return recipes;
     } catch (error) {

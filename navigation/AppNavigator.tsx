@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RouteNames } from './routeNames';
-import { RootStackParamList } from './types'; 
+import { RootStackParamList } from './types';
 import { LandingPage } from '../features/landing/LandingPage';
 import LoginScreen from '../features/auth/LoginScreen';
 import RegisterScreen from '../features/auth/RegisterScreen';
@@ -23,22 +23,10 @@ function AuthNavigator() {
         headerShown: false,
       }}
     >
-      <Stack.Screen
-        name={RouteNames.Landing}
-        component={LandingPage}
-      />
-      <Stack.Screen
-        name={RouteNames.Login}
-        component={LoginScreen}
-      />
-      <Stack.Screen
-        name={RouteNames.Register}
-        component={RegisterScreen}
-      />
-      <Stack.Screen
-        name={RouteNames.ForgotPassword}
-        component={ForgotPasswordScreen}
-      />
+      <Stack.Screen name={RouteNames.Landing} component={LandingPage} />
+      <Stack.Screen name={RouteNames.Login} component={LoginScreen} />
+      <Stack.Screen name={RouteNames.Register} component={RegisterScreen} />
+      <Stack.Screen name={RouteNames.ForgotPassword} component={ForgotPasswordScreen} />
     </Stack.Navigator>
   );
 }
@@ -54,10 +42,7 @@ function AppStackNavigator() {
         headerShown: false,
       }}
     >
-      <Stack.Screen
-        name={RouteNames.MainApp}
-        component={TabNavigator}
-      />
+      <Stack.Screen name={RouteNames.MainApp} component={TabNavigator} />
     </Stack.Navigator>
   );
 }

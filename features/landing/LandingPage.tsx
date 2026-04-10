@@ -211,28 +211,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigation }) => {
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <Text style={styles.heroTitle}>SusChef</Text>
-          <Text style={styles.heroTagline}>
-            AI in your pantry, magic on your plate
-          </Text>
+          <Text style={styles.heroTagline}>AI in your pantry, magic on your plate</Text>
           <Text style={styles.heroDescription}>
-            Transform your kitchen from cluttered and wasteful to smart and sustainable.
-            Discover recipes you love from the ingredients you have.
+            Transform your kitchen from cluttered and wasteful to smart and sustainable. Discover
+            recipes you love from the ingredients you have.
           </Text>
 
           {/* CTA Button */}
           <Pressable
-            style={({ pressed }) => [
-              styles.ctaButton,
-              pressed && { opacity: 0.8 },
-            ]}
+            style={({ pressed }) => [styles.ctaButton, pressed && { opacity: 0.8 }]}
             onPress={handleGetStarted}
           >
             <Text style={styles.ctaButtonText}>Get Started</Text>
-            <ArrowRight
-              size={isWideScreen ? 22 : 20}
-              color={colors.surface}
-              strokeWidth={2.5}
-            />
+            <ArrowRight size={isWideScreen ? 22 : 20} color={colors.surface} strokeWidth={2.5} />
           </Pressable>
         </View>
 
@@ -252,9 +243,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigation }) => {
                     />
                   </View>
                   <Text style={styles.featureTitle}>{feature.title}</Text>
-                  <Text style={styles.featureDescription}>
-                    {feature.description}
-                  </Text>
+                  <Text style={styles.featureDescription}>{feature.description}</Text>
                 </View>
               );
             })}
@@ -292,11 +281,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigation }) => {
           onPress={handleGetStarted}
         >
           <Text style={styles.ctaButtonText}>Start Your Journey</Text>
-          <ArrowRight
-            size={isWideScreen ? 22 : 20}
-            color={colors.surface}
-            strokeWidth={2.5}
-          />
+          <ArrowRight size={isWideScreen ? 22 : 20} color={colors.surface} strokeWidth={2.5} />
         </Pressable>
       </ScrollView>
     </SafeAreaView>

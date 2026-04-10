@@ -8,7 +8,13 @@ import { SavedRecipesScreen } from '../features/home/SavedRecipesScreen';
 import { RecipeResultsScreen } from '../features/recommendations/RecipeResultsScreen';
 import { RecipeDetailScreen } from '../features/recommendations/RecipeDetailScreen';
 import { RouteNames } from './routeNames';
-import { TabParamList, PantryStackParamList, ProfileStackParamList, RecipesStackParamList, SavedStackParamList } from './types';
+import {
+  TabParamList,
+  PantryStackParamList,
+  ProfileStackParamList,
+  RecipesStackParamList,
+  SavedStackParamList,
+} from './types';
 import { colors } from '../core/theme/colors';
 import { typography } from '../core/theme/typography';
 import { ProfileScreen } from '../features/profile/ProfileScreen';
@@ -45,10 +51,7 @@ const styles = StyleSheet.create({
 function PantryStackNavigator() {
   return (
     <PantryStack.Navigator screenOptions={{ headerShown: false }}>
-      <PantryStack.Screen
-        name={RouteNames.PantryScreen}
-        component={PantryScreen}
-      />
+      <PantryStack.Screen name={RouteNames.PantryScreen} component={PantryScreen} />
     </PantryStack.Navigator>
   );
 }
@@ -57,14 +60,8 @@ function PantryStackNavigator() {
 function RecipesStackNavigator() {
   return (
     <RecipesStack.Navigator screenOptions={{ headerShown: false }}>
-      <RecipesStack.Screen
-        name={RouteNames.RecipeResultsScreen}
-        component={RecipeResultsScreen}
-      />
-      <RecipesStack.Screen
-        name={RouteNames.RecipeDetail}
-        component={RecipeDetailScreen}
-      />
+      <RecipesStack.Screen name={RouteNames.RecipeResultsScreen} component={RecipeResultsScreen} />
+      <RecipesStack.Screen name={RouteNames.RecipeDetail} component={RecipeDetailScreen} />
     </RecipesStack.Navigator>
   );
 }
@@ -73,14 +70,8 @@ function RecipesStackNavigator() {
 function SavedStackNavigator() {
   return (
     <SavedStack.Navigator screenOptions={{ headerShown: false }}>
-      <SavedStack.Screen
-        name={RouteNames.Saved}
-        component={SavedRecipesScreen}
-      />
-      <SavedStack.Screen
-        name={RouteNames.RecipeDetail}
-        component={RecipeDetailScreen}
-      />
+      <SavedStack.Screen name={RouteNames.Saved} component={SavedRecipesScreen} />
+      <SavedStack.Screen name={RouteNames.RecipeDetail} component={RecipeDetailScreen} />
     </SavedStack.Navigator>
   );
 }

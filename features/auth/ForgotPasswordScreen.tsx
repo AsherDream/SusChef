@@ -108,9 +108,7 @@ const createStyles = () =>
 
 const styles = createStyles();
 
-export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
-  navigation,
-}) => {
+export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -158,15 +156,9 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={styles.container}
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
           {/* Back Button */}
-          <Pressable
-            style={styles.header}
-            onPress={handleBackToLogin}
-          >
+          <Pressable style={styles.header} onPress={handleBackToLogin}>
             <View style={styles.backButton}>
               <ChevronLeft size={24} color={colors.primary} />
               <Text style={styles.backText}>Back</Text>
@@ -176,9 +168,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           {/* Header Section */}
           <View style={styles.headerSection}>
             <Text style={styles.title}>Reset Password</Text>
-            <Text style={styles.subtitle}>
-              Enter your email and we will send you a reset link.
-            </Text>
+            <Text style={styles.subtitle}>Enter your email and we will send you a reset link.</Text>
           </View>
 
           {/* Form Section */}
@@ -198,11 +188,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           </View>
 
           {/* Send Button */}
-          <Pressable
-            style={styles.sendButton}
-            onPress={handleSendResetLink}
-            disabled={isLoading}
-          >
+          <Pressable style={styles.sendButton} onPress={handleSendResetLink} disabled={isLoading}>
             <Text style={styles.sendButtonText}>
               {isLoading ? 'Sending...' : 'Send Reset Link'}
             </Text>
@@ -210,9 +196,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
 
           {/* Back to Login Link */}
           <View style={styles.backToLoginContainer}>
-            <Text style={styles.backToLoginText}>
-              Remember your password?{' '}
-            </Text>
+            <Text style={styles.backToLoginText}>Remember your password? </Text>
             <Pressable onPress={handleBackToLogin}>
               <Text style={styles.backToLoginLink}>Back to Login</Text>
             </Pressable>

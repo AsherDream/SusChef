@@ -86,6 +86,16 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
+      /**
+       * Securely logs out the current user and sanitizes the application state.
+       *
+       * This action performs a full cleanup:
+       * 1. Calls Firebase signOut() to terminate the backend session.
+       * 2. Clears the local Zustand authentication state.
+       * 3. Triggers clear actions on the Pantry and Recipe stores to prevent cross-user data leakage.
+       *
+       * @throws {Error} If the Firebase network request fails during logout.
+       */
       logout: async () => {
         try {
           // Call Firebase logout

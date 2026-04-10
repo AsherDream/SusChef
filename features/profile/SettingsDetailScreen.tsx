@@ -26,10 +26,7 @@ export function SettingsDetailScreen() {
   };
 
   const handleResetPassword = () => {
-    Alert.alert(
-      'Password Reset',
-      'A password reset link has been sent to your email.'
-    );
+    Alert.alert('Password Reset', 'A password reset link has been sent to your email.');
   };
 
   const handleChangeAccount = () => {
@@ -44,7 +41,10 @@ export function SettingsDetailScreen() {
     <ScrollView style={[styles.screen, { backgroundColor: colors.background }]}>
       {/* Back Button Header */}
       <View style={styles.header}>
-        <Pressable onPress={handleBack} style={({ pressed }) => [styles.backButton, { opacity: pressed ? 0.6 : 1 }]}>
+        <Pressable
+          onPress={handleBack}
+          style={({ pressed }) => [styles.backButton, { opacity: pressed ? 0.6 : 1 }]}
+        >
           <ChevronLeft size={24} color={colors.text.primary} />
           <Text style={[styles.backText, { color: colors.text.primary }]}>Back</Text>
         </Pressable>
@@ -53,7 +53,10 @@ export function SettingsDetailScreen() {
       {/* User Profile Card */}
       <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
         <View style={styles.centered}>
-          <AvatarPicker imageUri={avatar} onPick={() => Alert.alert('Pick Image', 'Hook up to image picker.')} />
+          <AvatarPicker
+            imageUri={avatar}
+            onPick={() => Alert.alert('Pick Image', 'Hook up to image picker.')}
+          />
         </View>
 
         {/* Display User Info (Read-only with fallback) */}
@@ -72,13 +75,19 @@ export function SettingsDetailScreen() {
       <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
         <Pressable
           onPress={handleResetPassword}
-          style={({ pressed }) => [styles.button, { backgroundColor: colors.primary, opacity: pressed ? 0.9 : 1 }]}
+          style={({ pressed }) => [
+            styles.button,
+            { backgroundColor: colors.primary, opacity: pressed ? 0.9 : 1 },
+          ]}
         >
           <Text style={[styles.buttonText, { color: colors.surface }]}>Reset Password</Text>
         </Pressable>
         <Pressable
           onPress={handleChangeAccount}
-          style={({ pressed }) => [styles.button, { backgroundColor: colors.secondary, opacity: pressed ? 0.9 : 1 }]}
+          style={({ pressed }) => [
+            styles.button,
+            { backgroundColor: colors.secondary, opacity: pressed ? 0.9 : 1 },
+          ]}
         >
           <Text style={[styles.buttonText, { color: colors.text.primary }]}>Change Account</Text>
         </Pressable>
@@ -88,7 +97,11 @@ export function SettingsDetailScreen() {
       <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
         <Pressable
           onPress={handleLogout}
-          style={({ pressed }) => [styles.button, styles.destructiveButton, { opacity: pressed ? 0.9 : 1 }]}
+          style={({ pressed }) => [
+            styles.button,
+            styles.destructiveButton,
+            { opacity: pressed ? 0.9 : 1 },
+          ]}
         >
           <Text style={[styles.buttonText, { color: colors.status.error }]}>Log Out</Text>
         </Pressable>

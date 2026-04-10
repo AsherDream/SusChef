@@ -23,106 +23,107 @@ import { useAuthForm } from './hooks/useAuthForm';
 type LoginScreenProps = NativeStackScreenProps<RootStackParamList, typeof RouteNames.Login>;
 
 // Move styles outside component
-const createStyles = () => StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  container: {
-    flexGrow: 1,
-    paddingHorizontal: layout.spacing.lg,
-    paddingTop: layout.spacing.xl,
-    paddingBottom: layout.spacing.lg,
-  },
-  headerSection: {
-    alignItems: 'center',
-    marginBottom: layout.spacing.xl,
-  },
-  leafIcon: {
-    marginBottom: layout.spacing.md,
-  },
-  title: {
-    fontSize: typography.size.h1,
-    fontWeight: '700' as const,
-    color: colors.text.primary,
-    marginBottom: layout.spacing.sm,
-  },
-  subtitle: {
-    fontSize: typography.size.body,
-    color: colors.text.secondary,
-  },
-  formSection: {
-    marginBottom: layout.spacing.xl,
-  },
-  forgotPasswordContainer: {
-    alignItems: 'flex-end',
-    marginTop: layout.spacing.sm,
-  },
-  forgotPasswordText: {
-    fontSize: typography.size.caption,
-    color: colors.primary,
-    fontWeight: '600' as const,
-  },
-  errorText: {
-    fontSize: typography.size.caption,
-    color: colors.status.error,
-    marginTop: -layout.spacing.sm,
-    marginBottom: layout.spacing.md,
-  },
-  loginButton: {
-    backgroundColor: colors.primary,
-    borderRadius: layout.radius.full,
-    paddingVertical: layout.spacing.md,
-    paddingHorizontal: layout.spacing.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: layout.spacing.lg,
-  },
-  loginButtonText: {
-    color: colors.surface,
-    fontSize: typography.size.body,
-    fontWeight: '700' as const,
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: layout.spacing.lg,
-    gap: layout.spacing.md,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.border,
-  },
-  dividerText: {
-    fontSize: typography.size.caption,
-    color: colors.text.secondary,
-  },
-  socialSection: {
-    flexDirection: 'row',
-    gap: layout.spacing.md,
-    marginBottom: layout.spacing.xl,
-  },
-  socialButton: {
-    flex: 1,
-  },
-  signUpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: layout.spacing.sm,
-    marginTop: layout.spacing.lg,
-  },
-  signUpText: {
-    fontSize: typography.size.body,
-    color: colors.text.secondary,
-  },
-  signUpLink: {
-    fontSize: typography.size.body,
-    color: colors.primary,
-    fontWeight: '600' as const,
-  },
-});
+const createStyles = () =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      flexGrow: 1,
+      paddingHorizontal: layout.spacing.lg,
+      paddingTop: layout.spacing.xl,
+      paddingBottom: layout.spacing.lg,
+    },
+    headerSection: {
+      alignItems: 'center',
+      marginBottom: layout.spacing.xl,
+    },
+    leafIcon: {
+      marginBottom: layout.spacing.md,
+    },
+    title: {
+      fontSize: typography.size.h1,
+      fontWeight: '700' as const,
+      color: colors.text.primary,
+      marginBottom: layout.spacing.sm,
+    },
+    subtitle: {
+      fontSize: typography.size.body,
+      color: colors.text.secondary,
+    },
+    formSection: {
+      marginBottom: layout.spacing.xl,
+    },
+    forgotPasswordContainer: {
+      alignItems: 'flex-end',
+      marginTop: layout.spacing.sm,
+    },
+    forgotPasswordText: {
+      fontSize: typography.size.caption,
+      color: colors.primary,
+      fontWeight: '600' as const,
+    },
+    errorText: {
+      fontSize: typography.size.caption,
+      color: colors.status.error,
+      marginTop: -layout.spacing.sm,
+      marginBottom: layout.spacing.md,
+    },
+    loginButton: {
+      backgroundColor: colors.primary,
+      borderRadius: layout.radius.full,
+      paddingVertical: layout.spacing.md,
+      paddingHorizontal: layout.spacing.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: layout.spacing.lg,
+    },
+    loginButtonText: {
+      color: colors.surface,
+      fontSize: typography.size.body,
+      fontWeight: '700' as const,
+    },
+    dividerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: layout.spacing.lg,
+      gap: layout.spacing.md,
+    },
+    dividerLine: {
+      flex: 1,
+      height: 1,
+      backgroundColor: colors.border,
+    },
+    dividerText: {
+      fontSize: typography.size.caption,
+      color: colors.text.secondary,
+    },
+    socialSection: {
+      flexDirection: 'row',
+      gap: layout.spacing.md,
+      marginBottom: layout.spacing.xl,
+    },
+    socialButton: {
+      flex: 1,
+    },
+    signUpContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: layout.spacing.sm,
+      marginTop: layout.spacing.lg,
+    },
+    signUpText: {
+      fontSize: typography.size.body,
+      color: colors.text.secondary,
+    },
+    signUpLink: {
+      fontSize: typography.size.body,
+      color: colors.primary,
+      fontWeight: '600' as const,
+    },
+  });
 
 const styles = createStyles();
 
@@ -175,10 +176,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={styles.container}
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
           {/* Header Section */}
           <View style={styles.headerSection}>
             <View style={styles.leafIcon}>
@@ -210,20 +208,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
             {error && <Text style={styles.errorText}>{error}</Text>}
 
-            <Pressable
-              style={styles.forgotPasswordContainer}
-              onPress={handleForgotPassword}
-            >
+            <Pressable style={styles.forgotPasswordContainer} onPress={handleForgotPassword}>
               <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
             </Pressable>
           </View>
 
           {/* Action Section */}
-          <Pressable
-            style={styles.loginButton}
-            onPress={handleLoginPress}
-            disabled={isLoading}
-          >
+          <Pressable style={styles.loginButton} onPress={handleLoginPress} disabled={isLoading}>
             {isLoading ? (
               <ActivityIndicator color={colors.surface} />
             ) : (
@@ -241,11 +232,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           {/* Social Section */}
           <View style={styles.socialSection}>
             <View style={styles.socialButton}>
-              <SocialButton
-                title="Google"
-                iconName="google"
-                onPress={handleGoogleLoginPress}
-              />
+              <SocialButton title="Google" iconName="google" onPress={handleGoogleLoginPress} />
             </View>
             <View style={styles.socialButton}>
               <SocialButton
