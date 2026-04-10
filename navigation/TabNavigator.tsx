@@ -8,7 +8,7 @@ import { SavedRecipesScreen } from '../features/home/SavedRecipesScreen';
 import { RecipeResultsScreen } from '../features/recommendations/RecipeResultsScreen';
 import { RecipeDetailScreen } from '../features/recommendations/RecipeDetailScreen';
 import { RouteNames } from './routeNames';
-import { TabParamList, PantryStackParamList, ProfileStackParamList, RecipesStackParamList } from './types';
+import { TabParamList, PantryStackParamList, ProfileStackParamList, RecipesStackParamList, SavedStackParamList } from './types';
 import { colors } from '../core/theme/colors';
 import { typography } from '../core/theme/typography';
 import { ProfileScreen } from '../features/profile/ProfileScreen';
@@ -18,6 +18,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
 const PantryStack = createNativeStackNavigator<PantryStackParamList>();
 const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 const RecipesStack = createNativeStackNavigator<RecipesStackParamList>();
+const SavedStack = createNativeStackNavigator<SavedStackParamList>();
 
 const styles = StyleSheet.create({
   tabBar: {
@@ -65,6 +66,22 @@ function RecipesStackNavigator() {
         component={RecipeDetailScreen}
       />
     </RecipesStack.Navigator>
+  );
+}
+
+// Nested Stack for Saved Recipes
+function SavedStackNavigator() {
+  return (
+    <SavedStack.Navigator screenOptions={{ headerShown: false }}>
+      <SavedStack.Screen
+        name={RouteNames.Saved}
+        component={SavedRecipesScreen}
+      />
+      <SavedStack.Screen
+        name={RouteNames.RecipeDetail}
+        component={RecipeDetailScreen}
+      />
+    </SavedStack.Navigator>
   );
 }
 
@@ -121,7 +138,7 @@ export default function TabNavigator() {
       />
       <Tab.Screen
         name={RouteNames.Saved}
-        component={SavedRecipesScreen}
+        component={SavedStackNavigator}
         options={{
           tabBarLabel: 'Saved',
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (

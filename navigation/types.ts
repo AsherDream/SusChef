@@ -23,6 +23,11 @@ export type RecipesStackParamList = {
   [RouteNames.RecipeDetail]: { recipeId: string };
 };
 
+export type SavedStackParamList = {
+  [RouteNames.Saved]: undefined;
+  [RouteNames.RecipeDetail]: { recipeId: string };
+};
+
 export type PantryStackParamList = {
   [RouteNames.PantryScreen]: undefined;
   [RouteNames.RecipeResults]: undefined;
