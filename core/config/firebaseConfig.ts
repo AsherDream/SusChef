@@ -1,6 +1,7 @@
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import { initializeAuth, getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
+import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 // Firebase configuration - using environment variables with fallbacks
@@ -41,6 +42,22 @@ try {
   // Initialize Firestore
   db = getFirestore(app);
   console.log('Firebase Firestore initialized');
+
+  // Connect to local emulator during development
+  if (
+    typeof process !== 'undefined' &&
+    process.env.NODE_ENV === 'development' &&
+    typeof window !== 'undefined'
+  ) {
+    const functions = getFunctions(app);
+    try {
+      connectFunctionsEmulator(functions, 'localhost', 5001);
+      console.log('🔌 Connected to Firebase Functions Emulator on port 5001');
+    } catch (error) {
+      // Emulator already connected or unavailable - not a critical error
+      console.debug('Functions emulator connection info:', error);
+    }
+  }
 } catch (error) {
   console.error('Firebase initialization error:', error);
   throw new Error('Failed to initialize Firebase. Check your configuration.');
