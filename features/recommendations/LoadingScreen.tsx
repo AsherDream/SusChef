@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { ChefHat } from 'lucide-react-native';
-import { colors } from '../../core/theme/colors';
+import { useThemeColors } from '../../core/theme/theme';
 import { typography } from '../../core/theme/typography';
 
 export const LoadingScreen: React.FC = () => {
+  const colors = useThemeColors();
   const rotationValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export const LoadingScreen: React.FC = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#FFFFFF',
+      backgroundColor: colors.background,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -33,7 +34,7 @@ export const LoadingScreen: React.FC = () => {
       width: 160,
       height: 160,
       borderRadius: 80,
-      backgroundColor: '#E8F5E9',
+      backgroundColor: colors.border,
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: 32,

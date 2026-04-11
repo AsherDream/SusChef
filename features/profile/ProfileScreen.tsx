@@ -94,7 +94,10 @@ export function ProfileScreen() {
     try {
       setIsLoggingOut(true);
       await logout();
-      // Firebase auth listener in App.tsx will handle navigation
+      
+      // Use replace to clear navigation history and navigate directly to Login screen
+      // This ensures user cannot swipe back to the app after logout
+      navigation.replace(RouteNames.Login);
     } catch (error) {
       setIsLoggingOut(false);
       console.error('Logout error:', error);
@@ -164,7 +167,7 @@ export function ProfileScreen() {
                 style={[
                   styles.allergyText,
                   {
-                    color: selectedAllergies.includes(allergy) ? '#fff' : colors.text.primary,
+                    color: selectedAllergies.includes(allergy) ? colors.surface : colors.text.primary,
                   },
                 ]}
               >

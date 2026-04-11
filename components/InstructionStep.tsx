@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors } from '../core/theme/colors';
+import { useThemeColors } from '../core/theme/theme';
 import { layout, typography } from '../core/theme/typography';
 
 interface InstructionStepProps {
@@ -9,6 +9,7 @@ interface InstructionStepProps {
 }
 
 export const InstructionStep: React.FC<InstructionStepProps> = ({ stepNumber, instruction }) => {
+  const colors = useThemeColors();
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'row',

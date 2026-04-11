@@ -5,14 +5,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { RecipeCard } from '../../components/RecipeCard';
 import { Button } from '../../components/Button';
 import { useRecipeStore } from '../../store/useRecipeStore';
-import { colors } from '../../core/theme/colors';
+import { useThemeColors } from '../../core/theme/theme';
 import { layout, typography } from '../../core/theme/typography';
 
 interface RecipeResultsScreenProps {
   navigation: any;
 }
 
-const createStyles = () =>
+const createStyles = (colors: ReturnType<typeof useThemeColors>) =>
   StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -28,7 +28,7 @@ const createStyles = () =>
       paddingVertical: layout.spacing.md,
       backgroundColor: colors.surface,
       borderBottomWidth: 1,
-      borderBottomColor: '#F0F0F0',
+      borderBottomColor: colors.border,
     },
     backButton: {
       marginRight: layout.spacing.md,
@@ -73,7 +73,7 @@ const createStyles = () =>
       paddingHorizontal: layout.spacing.lg,
       paddingVertical: layout.spacing.md,
       marginTop: layout.spacing.lg,
-      backgroundColor: '#FDE8E8',
+      backgroundColor: colors.status.error + '1A',
       borderRadius: layout.radius.md,
       borderLeftWidth: 4,
       borderLeftColor: colors.status.error,
@@ -85,9 +85,9 @@ const createStyles = () =>
     },
   });
 
-const styles = createStyles();
-
 export const RecipeResultsScreen: React.FC<RecipeResultsScreenProps> = ({ navigation }) => {
+  const colors = useThemeColors();
+  const styles = createStyles(colors);
   const { generatedRecipes, isGenerating, error, clearRecipes } = useRecipeStore();
 
   // Clear ghost error state on mount if no recipes exist

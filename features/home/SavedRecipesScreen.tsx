@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { GridRecipeCard } from '../../components/cookbook/GridRecipeCard';
 import { CookbookFilter } from '../../components/cookbook/CookbookFilter';
 import { EmptyCookbook } from '../../components/cookbook/EmptyCookbook';
-import { colors } from '../../core/theme/colors';
+import { useThemeColors } from '../../core/theme/theme';
 import { layout, typography } from '../../core/theme/typography';
 import { RouteNames } from '../../navigation/routeNames';
 import { useRecipeStore } from '../../store/useRecipeStore';
@@ -19,7 +19,7 @@ interface SavedRecipesScreenProps {
 const CATEGORIES = ['All', 'Breakfast', 'Lunch', 'Dinner'];
 
 // Move styles outside component
-const createStyles = () =>
+const createStyles = (colors: ReturnType<typeof useThemeColors>) =>
   StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -60,8 +60,6 @@ const createStyles = () =>
     },
   });
 
-const styles = createStyles();
-
 // Helper to categorize recipes based on recipe IDs
 const RECIPE_CATEGORIES: { [key: string]: string[] } = {
   Breakfast: ['1'],
@@ -80,6 +78,8 @@ const filterRecipesByCategory = (recipes: Recipe[], category: string | null): Re
 };
 
 export const SavedRecipesScreen: React.FC<SavedRecipesScreenProps> = ({ navigation }) => {
+  const colors = useThemeColors();
+  const styles = createStyles(colors);
   const { user } = useAuthStore();
   const { savedRecipes, toggleSave, isRecipeSaved } = useRecipeStore();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);

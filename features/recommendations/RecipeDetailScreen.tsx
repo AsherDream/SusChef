@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TabSwitcher } from '../../components/TabSwitcher';
 import { IngredientItem } from '../../components/IngredientItem';
 import { InstructionStep } from '../../components/InstructionStep';
-import { colors } from '../../core/theme/colors';
+import { useThemeColors } from '../../core/theme/theme';
 import { layout, typography } from '../../core/theme/typography';
 import { getRecipeImage } from '../../core/utils/imageHelper';
 import { useRecipeStore } from '../../store/useRecipeStore';
@@ -19,7 +19,7 @@ interface RecipeDetailScreenProps {
 }
 
 // Move styles outside component
-const createStyles = () =>
+const createStyles = (colors: ReturnType<typeof useThemeColors>) =>
   StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -31,7 +31,7 @@ const createStyles = () =>
     imageContainer: {
       position: 'relative',
       height: 288,
-      backgroundColor: '#E0E0E0',
+      backgroundColor: colors.border,
     },
     image: {
       width: '100%',
@@ -44,7 +44,7 @@ const createStyles = () =>
       width: 40,
       height: 40,
       borderRadius: 20,
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      backgroundColor: `${colors.surface}E6`,
       justifyContent: 'center',
       alignItems: 'center',
       zIndex: 10,
@@ -75,7 +75,7 @@ const createStyles = () =>
       width: 48,
       height: 48,
       borderRadius: 24,
-      backgroundColor: '#F5F5F5',
+      backgroundColor: colors.border,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -85,7 +85,7 @@ const createStyles = () =>
       marginBottom: layout.spacing.lg,
       paddingBottom: layout.spacing.lg,
       borderBottomWidth: 1,
-      borderBottomColor: '#F0F0F0',
+      borderBottomColor: colors.border,
     },
     metadataItem: {
       flexDirection: 'column',
@@ -110,9 +110,9 @@ const createStyles = () =>
     },
   });
 
-const styles = createStyles();
-
 export const RecipeDetailScreen: React.FC<RecipeDetailScreenProps> = ({ navigation, route }) => {
+  const colors = useThemeColors();
+  const styles = createStyles(colors);
   const recipeId = route.params?.recipeId;
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoadingRecipe, setIsLoadingRecipe] = useState(true);

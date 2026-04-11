@@ -16,7 +16,7 @@ import { IngredientListItem } from '../../components/IngredientListItem';
 import { ToolRow } from '../../components/ToolRow';
 import { Button } from '../../components/Button';
 import { LoadingScreen } from '../recommendations/LoadingScreen';
-import { colors } from '../../core/theme/colors';
+import { useThemeColors } from '../../core/theme/theme';
 import { layout, typography } from '../../core/theme/typography';
 import { RouteNames } from '../../navigation/routeNames';
 import { PantryStackParamList } from '../../navigation/types';
@@ -32,7 +32,7 @@ type PantryScreenProps = NativeStackScreenProps<
 >;
 
 // Move styles outside component to prevent recreation on every render
-const createStyles = () =>
+const createStyles = (colors: ReturnType<typeof useThemeColors>) =>
   StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -87,10 +87,10 @@ const createStyles = () =>
     },
   });
 
-const styles = createStyles();
-
 export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
   const { height } = useWindowDimensions();
+  const colors = useThemeColors();
+  const styles = createStyles(colors);
   const [isLoading, setIsLoading] = useState(false);
 
   // Get state from Zustand stores

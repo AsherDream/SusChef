@@ -3,7 +3,7 @@ import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 import { Trash2 } from 'lucide-react-native';
 import { BaseRow } from './BaseRow';
 import { UnitSelectorModal } from './UnitSelectorModal';
-import { colors } from '../core/theme/colors';
+import { useThemeColors } from '../core/theme/theme';
 import { layout, typography } from '../core/theme/typography';
 
 interface IngredientRowProps {
@@ -27,6 +27,7 @@ export const IngredientRow: React.FC<IngredientRowProps> = ({
   onUnitChange,
   editable = true,
 }) => {
+  const colors = useThemeColors();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [amountText, setAmountText] = useState(amount.toString());
 

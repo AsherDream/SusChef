@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Check } from 'lucide-react-native';
-import { colors } from '../core/theme/colors';
+import { useThemeColors } from '../core/theme/theme';
 import { layout, typography } from '../core/theme/typography';
 
 interface IngredientItemProps {
@@ -15,6 +15,7 @@ export const IngredientItem: React.FC<IngredientItemProps> = ({
   checked = false,
   onPress,
 }) => {
+  const colors = useThemeColors();
   const [isPressed, setIsPressed] = useState(false);
 
   const styles = StyleSheet.create({
@@ -25,20 +26,20 @@ export const IngredientItem: React.FC<IngredientItemProps> = ({
       paddingHorizontal: layout.spacing.md,
       borderRadius: layout.radius.md,
       marginBottom: layout.spacing.sm,
-      backgroundColor: isPressed || checked ? '#E8F5E9' : colors.surface,
+      backgroundColor: isPressed || checked ? colors.primary + '1A' : colors.surface,
       borderWidth: 1,
-      borderColor: isPressed || checked ? colors.primary : '#E0E0E0',
+      borderColor: isPressed || checked ? colors.primary : colors.border,
     },
     checkbox: {
       width: 24,
       height: 24,
       borderRadius: 12,
-      backgroundColor: checked ? colors.primary : '#F5F5F5',
+      backgroundColor: checked ? colors.primary : colors.background,
       justifyContent: 'center',
       alignItems: 'center',
       marginRight: layout.spacing.md,
       borderWidth: checked ? 0 : 1,
-      borderColor: '#D0D0D0',
+      borderColor: colors.border,
     },
     text: {
       fontSize: typography.size.body,

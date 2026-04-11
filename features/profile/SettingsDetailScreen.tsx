@@ -13,8 +13,9 @@ import { RootStackParamList } from '../../navigation/types';
 
 export function SettingsDetailScreen() {
   const colors = useThemeColors();
+  const screenStyles = styles(colors);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const [avatar, setAvatar] = useState<string | undefined>(undefined);
 
   // Use real user data from store with fallbacks
@@ -33,26 +34,35 @@ export function SettingsDetailScreen() {
     Alert.alert('Change Account', 'This will navigate to account switching.');
   };
 
-  const handleLogout = () => {
-    navigation.reset({ index: 0, routes: [{ name: RouteNames.Login as never }] });
+  const handleLogout = async () => {
+    try {
+      await logout();
+      
+      // Use reset to clear navigation history and navigate directly to Login screen
+      // This ensures user cannot swipe back to the app after logout
+      navigation.reset({ index: 0, routes: [{ name: RouteNames.Login as never }] });
+    } catch (error) {
+      console.error('Logout error:', error);
+      Alert.alert('Logout Failed', 'Failed to logout. Please try again.');
+    }
   };
 
   return (
-    <ScrollView style={[styles.screen, { backgroundColor: colors.background }]}>
+    <ScrollView style={[screenStyles.screen]}>
       {/* Back Button Header */}
-      <View style={styles.header}>
+      <View style={screenStyles.header}>
         <Pressable
           onPress={handleBack}
-          style={({ pressed }) => [styles.backButton, { opacity: pressed ? 0.6 : 1 }]}
+          style={({ pressed }) => [screenStyles.backButton, { opacity: pressed ? 0.6 : 1 }]}
         >
           <ChevronLeft size={24} color={colors.text.primary} />
-          <Text style={[styles.backText, { color: colors.text.primary }]}>Back</Text>
+          <Text style={[screenStyles.backText, { color: colors.text.primary }]}>Back</Text>
         </Pressable>
       </View>
 
       {/* User Profile Card */}
-      <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
-        <View style={styles.centered}>
+      <View style={[screenStyles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
+        <View style={screenStyles.centered}>
           <AvatarPicker
             imageUri={avatar}
             onPick={() => Alert.alert('Pick Image', 'Hook up to image picker.')}
@@ -60,60 +70,60 @@ export function SettingsDetailScreen() {
         </View>
 
         {/* Display User Info (Read-only with fallback) */}
-        <View style={styles.userInfoSection}>
-          <Text style={[styles.label, { color: colors.text.secondary }]}>Full Name</Text>
-          <Text style={[styles.userValue, { color: colors.text.primary }]}>{displayName}</Text>
+        <View style={screenStyles.userInfoSection}>
+          <Text style={[screenStyles.label, { color: colors.text.secondary }]}>Full Name</Text>
+          <Text style={[screenStyles.userValue, { color: colors.text.primary }]}>{displayName}</Text>
         </View>
 
-        <View style={styles.userInfoSection}>
-          <Text style={[styles.label, { color: colors.text.secondary }]}>Email</Text>
-          <Text style={[styles.userValue, { color: colors.text.primary }]}>{userEmail}</Text>
+        <View style={screenStyles.userInfoSection}>
+          <Text style={[screenStyles.label, { color: colors.text.secondary }]}>Email</Text>
+          <Text style={[screenStyles.userValue, { color: colors.text.primary }]}>{userEmail}</Text>
         </View>
       </View>
 
       {/* Password & Account Management */}
-      <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
+      <View style={[screenStyles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
         <Pressable
           onPress={handleResetPassword}
           style={({ pressed }) => [
-            styles.button,
+            screenStyles.button,
             { backgroundColor: colors.primary, opacity: pressed ? 0.9 : 1 },
           ]}
         >
-          <Text style={[styles.buttonText, { color: colors.surface }]}>Reset Password</Text>
+          <Text style={[screenStyles.buttonText, { color: colors.surface }]}>Reset Password</Text>
         </Pressable>
         <Pressable
           onPress={handleChangeAccount}
           style={({ pressed }) => [
-            styles.button,
+            screenStyles.button,
             { backgroundColor: colors.secondary, opacity: pressed ? 0.9 : 1 },
           ]}
         >
-          <Text style={[styles.buttonText, { color: colors.text.primary }]}>Change Account</Text>
+          <Text style={[screenStyles.buttonText, { color: colors.text.primary }]}>Change Account</Text>
         </Pressable>
       </View>
 
       {/* Logout */}
-      <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
+      <View style={[screenStyles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
         <Pressable
           onPress={handleLogout}
           style={({ pressed }) => [
-            styles.button,
-            styles.destructiveButton,
+            screenStyles.button,
+            screenStyles.destructiveButton,
             { opacity: pressed ? 0.9 : 1 },
           ]}
         >
-          <Text style={[styles.buttonText, { color: colors.status.error }]}>Log Out</Text>
+          <Text style={[screenStyles.buttonText, { color: colors.status.error }]}>Log Out</Text>
         </Pressable>
       </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
+const styles = (colors: ReturnType<typeof useThemeColors>) => StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: layout.spacing.lg,

@@ -15,7 +15,7 @@ import {
   RecipesStackParamList,
   SavedStackParamList,
 } from './types';
-import { colors } from '../core/theme/colors';
+import { useThemeColors } from '../core/theme/theme';
 import { typography } from '../core/theme/typography';
 import { ProfileScreen } from '../features/profile/ProfileScreen';
 import { SettingsDetailScreen } from '../features/profile/SettingsDetailScreen';
@@ -26,26 +26,27 @@ const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 const RecipesStack = createNativeStackNavigator<RecipesStackParamList>();
 const SavedStack = createNativeStackNavigator<SavedStackParamList>();
 
-const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: colors.surface,
-    borderTopColor: colors.border,
-    borderTopWidth: 1,
-    height: 70,
-    paddingBottom: 4,
-    paddingTop: 4,
-    ...(Platform.OS === 'ios'
-      ? {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-        }
-      : {
-          elevation: 8,
-        }),
-  },
-});
+const createTabStyles = (colors: ReturnType<typeof useThemeColors>) =>
+  StyleSheet.create({
+    tabBar: {
+      backgroundColor: colors.surface,
+      borderTopColor: colors.border,
+      borderTopWidth: 1,
+      height: 70,
+      paddingBottom: 4,
+      paddingTop: 4,
+      ...(Platform.OS === 'ios'
+        ? {
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+          }
+        : {
+            elevation: 8,
+          }),
+    },
+  });
 
 // Nested Stack for Pantry
 function PantryStackNavigator() {
@@ -86,6 +87,9 @@ function ProfileStackNavigator() {
 }
 
 export default function TabNavigator() {
+  const colors = useThemeColors();
+  const styles = createTabStyles(colors);
+
   return (
     <Tab.Navigator
       id="MainTabs"
