@@ -6,12 +6,14 @@ import RootNavigator from './navigation/AppNavigator';
 import { ThemeProvider } from './core/theme/theme';
 import { useAuthStore } from './store/useAuthStore';
 import { usePantryStore } from './store/usePantryStore';
+import { useRecipeStore } from './store/useRecipeStore';
 import { auth } from './core/config/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 
 export default function App() {
   const { setUser, checkAuthStatus, fetchAndSetProfile } = useAuthStore();
   const { fetchAndSetPantry, clearPantry } = usePantryStore();
+  const { hydrateSavedRecipes } = useRecipeStore();
 
   // Initialize Firebase Auth listener
   useEffect(() => {
@@ -50,6 +52,14 @@ export default function App() {
         } catch (error) {
           console.warn('Failed to fetch user pantry from Firestore:', error);
           // Continue with defaults if fetch fails
+        }
+
+        // Hydrate user saved recipes from Firestore
+        try {
+          await hydrateSavedRecipes(user.uid);
+        } catch (error) {
+          console.warn('Failed to hydrate saved recipes from Firestore:', error);
+          // Continue with defaults if hydration fails
         }
       } else {
         // Clear user state on logout or session expiry (security fix)

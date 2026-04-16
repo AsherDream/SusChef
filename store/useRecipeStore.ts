@@ -16,6 +16,7 @@ interface RecipeStore {
   setSavedRecipes: (recipes: Recipe[]) => void;
   removeRecipe: (recipeId: string) => void;
   fetchSavedRecipes: (userId: string) => Promise<void>;
+  hydrateSavedRecipes: (userId: string) => Promise<void>;
 
   // AI-generated recipes
   generatedRecipes: Recipe[];
@@ -65,6 +66,17 @@ export const useRecipeStore = create<RecipeStore>()(
         } catch (error) {
           console.error('Failed to fetch saved recipes:', error);
           throw error;
+        }
+      },
+
+      hydrateSavedRecipes: async (userId: string) => {
+        try {
+          const recipes = await recipeApiService.getSavedRecipes(userId);
+          set({ savedRecipes: recipes });
+          console.log(`✓ Hydrated ${recipes.length} saved recipes on login`);
+        } catch (error) {
+          console.error('Failed to hydrate saved recipes:', error);
+          // Don't throw - allow app to continue with empty recipes
         }
       },
 
@@ -127,7 +139,7 @@ export const useRecipeStore = create<RecipeStore>()(
       },
 
       clearRecipes: () => {
-        set({ generatedRecipes: [], error: null });
+        set({ generatedRecipes: [], savedRecipes: [], error: null });
       },
 
       setError: (error: string | null) => {
