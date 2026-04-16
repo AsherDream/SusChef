@@ -6,10 +6,20 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "web": {
       "bundler": "metro",
       "output": "single"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7d7108c0-85fc-4969-83ef-c25ddef586e4"
+      }
+    },
+    "android": {
+      "package": "com.heinhtutaung.suschef"
     }
   }
 }

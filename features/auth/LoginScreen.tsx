@@ -148,19 +148,19 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     }
   };
 
-  const handleGoogleLoginPress = async () => {
-    const success = await handleSocialLogin('google');
-    if (success) {
-      navigation.navigate(RouteNames.MainApp);
-    }
-  };
+  // const handleGoogleLoginPress = async () => {
+  //   const success = await handleSocialLogin('google');
+  //   if (success) {
+  //     navigation.navigate(RouteNames.MainApp);
+  //   }
+  // };
 
-  const handleFacebookLoginPress = async () => {
-    const success = await handleSocialLogin('facebook');
-    if (success) {
-      navigation.navigate(RouteNames.MainApp);
-    }
-  };
+  // const handleFacebookLoginPress = async () => {
+  //   const success = await handleSocialLogin('facebook');
+  //   if (success) {
+  //     navigation.navigate(RouteNames.MainApp);
+  //   }
+  // };
 
   const handleSignUpPress = () => {
     navigation.navigate(RouteNames.Register);
@@ -230,18 +230,18 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           </View>
 
           {/* Social Section */}
-          <View style={styles.socialSection}>
-            <View style={styles.socialButton}>
-              <SocialButton title="Google" iconName="google" onPress={handleGoogleLoginPress} />
-            </View>
-            <View style={styles.socialButton}>
-              <SocialButton
-                title="Facebook"
-                iconName="facebook"
-                onPress={handleFacebookLoginPress}
-              />
-            </View>
-          </View>
+         {/*    <View style={styles.socialSection}>
+              <View style={styles.socialButton}>
+                <SocialButton title="Google" iconName="google" onPress={handleGoogleLoginPress} />
+              </View>
+              <View style={styles.socialButton}>
+                <SocialButton
+                  title="Facebook"
+                  iconName="facebook"
+                  onPress={handleFacebookLoginPress}
+                />
+              </View>
+            </View> */}
 
           {/* Sign Up Link */}
           <View style={styles.signUpContainer}>
