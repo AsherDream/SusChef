@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { User } from 'lucide-react-native';
 import { layout, typography } from '../../core/theme/typography';
 import { useThemeColors } from '../../core/theme/theme';
 
@@ -12,16 +11,18 @@ interface ProfileHeaderProps {
 
 export function ProfileHeader({ name, email, imageUri }: ProfileHeaderProps) {
   const colors = useThemeColors();
+  
+  // Use default avatar URL if no imageUri provided
+  const avatarUrl = imageUri || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=27ae60&color=fff`;
+  
   return (
     <View style={styles.container}>
       <View style={[styles.avatarWrapper, { backgroundColor: colors.border }]}>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.avatar} resizeMode="cover" />
-        ) : (
-          <View style={[styles.avatarFallback, { backgroundColor: colors.primary }]}>
-            <User size={40} color={colors.surface} />
-          </View>
-        )}
+        <Image 
+          source={{ uri: avatarUrl }} 
+          style={styles.avatar} 
+          resizeMode="cover"
+        />
       </View>
       <Text style={[styles.name, { color: colors.text.primary }]}>{name}</Text>
       <Text style={[styles.email, { color: colors.text.secondary }]}>{email}</Text>
@@ -48,12 +49,6 @@ const styles = StyleSheet.create({
   avatar: {
     width: '100%',
     height: '100%',
-  },
-  avatarFallback: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   name: {
     fontSize: typography.size.h1,

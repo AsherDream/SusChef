@@ -14,7 +14,7 @@ export const generateRecipes = onCall(
   { cors: [/localhost/, /127\.0\.0\.1/] },
   async (request) => {
     try {
-      const { ingredients = [], allergies = [] } = request.data;
+      const { ingredients = [], allergies = [], kitchenTools = [], dietaryOptions = [] } = request.data;
 
       // Validate input
       if (!Array.isArray(ingredients)) {
@@ -42,21 +42,20 @@ export const generateRecipes = onCall(
           ? ingredients.join(', ')
           : 'common pantry staples (oil, salt, pepper, rice, pasta)';
 
+      const toolsList = kitchenTools.length > 0 ? kitchenTools.join(', ') : 'No specific tools';
+
+      const dietaryList = dietaryOptions.length > 0 ? dietaryOptions.join(', ') : 'None';
+
       const allergyNote =
         allergies.length > 0
-          ? `IMPORTANT: Exclude these allergens: ${allergies.join(
-              ', '
-            )}. Do not include these in any recipe.`
-          : 'The user has no known allergies.';
+          ? allergies.join(', ')
+          : 'None';
 
-      const prompt = `
-Available: ${ingredientsList}
-Avoid: ${allergyNote}
+      const prompt = `You are a professional chef. Create a recipe using ONLY the following ingredients (you do not have to use all of them, but do not add unlisted major ingredients): ${ingredientsList}. Also utilize these kitchen tools: ${toolsList}. DIETARY RESTRICTIONS: ${dietaryList}. ALLERGIES TO STRICTLY AVOID: ${allergyNote}.
 
 Generate exactly 3 practical recipes as a JSON array.
 Each recipe MUST have these exact keys:
-id (string), title (string), time (number), difficulty (string), servings (number), ingredients (array of strings), instructions (array of strings), description (string), matchScore (number), totalItems (number), image (null).
-`;
+id (string), title (string), time (number), difficulty (string), servings (number), ingredients (array of strings), instructions (array of strings), description (string), matchScore (number), totalItems (number), image (null).`;
 
       // Call Gemini API with JSON mode
       const result = await model.generateContent({

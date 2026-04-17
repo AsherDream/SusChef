@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   View,
@@ -6,16 +6,15 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
-  FlatList,
   Platform,
+  TextInput,
+  Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ProfileHeader } from '../../components/profile/ProfileHeader';
 import { SettingRow } from '../../components/profile/SettingRow';
 import { PreferenceToggle } from '../../components/profile/PreferenceToggle';
 import { DietaryInfoRow } from '../../components/profile/DietaryInfoRow';
-import { AllergyManager } from '../../components/profile/AllergyManager';
 import { useAppStore } from '../../store/useAppStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { layout, typography } from '../../core/theme/typography';
@@ -36,7 +35,7 @@ const COMMON_ALLERGIES = ['Peanuts', 'Dairy', 'Gluten', 'Shellfish', 'Soy', 'Egg
 export function ProfileScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const colors = useThemeColors();
-  const { user, updateProfile, logout } = useAuthStore();
+  const { user, updateProfile, updateDisplayName, logout } = useAuthStore();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { toggleTheme, dietaryStyle, setDietaryStyle, isDarkMode } = useAppStore();
 
@@ -44,10 +43,20 @@ export function ProfileScreen() {
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>(user?.allergies || []);
   const [pdpaConsent, setPdpaConsent] = useState(user?.pdpaConsent || false);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // Local state for editable name
+  const [newName, setNewName] = useState(user?.displayName || '');
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSavingName, setIsSavingName] = useState(false);
 
   // Display name with fallback
   const displayName = user?.displayName || 'Chef';
   const userEmail = user?.email || 'No email';
+
+  // Avatar URL
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    user?.displayName || 'Chef'
+  )}&background=27ae60&color=fff`;
 
   const handleDietToggle = (diet: (typeof diets)[number]) => {
     setDietaryStyle(dietaryStyle === diet ? '' : diet);
@@ -59,17 +68,38 @@ export function ProfileScreen() {
     );
   };
 
+  const handleSaveName = async () => {
+    if (!newName.trim()) {
+      Alert.alert('Invalid Name', 'Please enter a valid name.');
+      return;
+    }
+
+    setIsSavingName(true);
+    try {
+      await updateDisplayName(newName.trim());
+      Alert.alert('Success', 'Your name has been updated!');
+      setIsEditing(false);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save name. Please try again.');
+      console.error('Error saving name:', error);
+    } finally {
+      setIsSavingName(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setNewName(user?.displayName || '');
+    setIsEditing(false);
+  };
+
   const canSavePreferences = (): boolean => {
-    // If allergies are selected, consent must be checked
     if (selectedAllergies.length > 0) {
       return pdpaConsent;
     }
-    // If no allergies, consent is not required
     return true;
   };
 
   const handleSavePreferences = async () => {
-    // Validate before saving
     if (selectedAllergies.length > 0 && !pdpaConsent) {
       Alert.alert(
         'Consent Required',
@@ -80,9 +110,8 @@ export function ProfileScreen() {
 
     setIsSaving(true);
     try {
-      // Save to Zustand store and Firestore
       await updateProfile(selectedAllergies, pdpaConsent);
-      Alert.alert('Success', 'Your allergy preferences have been saved.');
+      Alert.alert('Success', 'Your preferences have been saved.');
     } catch (error) {
       Alert.alert('Error', 'Failed to save preferences. Please try again.');
     } finally {
@@ -94,14 +123,10 @@ export function ProfileScreen() {
     try {
       setIsLoggingOut(true);
       await logout();
-      
-      // Use replace to clear navigation history and navigate directly to Login screen
-      // This ensures user cannot swipe back to the app after logout
       navigation.replace(RouteNames.Login);
     } catch (error) {
       setIsLoggingOut(false);
       console.error('Logout error:', error);
-      // Fallback web-compatible alert
       if (Platform.OS === 'web') {
         window.alert('Failed to log out. Please try again.');
       } else {
@@ -110,18 +135,86 @@ export function ProfileScreen() {
     }
   };
 
-  const handleResetPassword = () => {
-    Alert.alert('Reset Password', 'Password reset flow coming soon.');
-  };
-
   return (
     <ScrollView
       style={[styles.screen, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.content}
     >
-      {/* User Profile Header */}
+      {/* User Profile Header with Avatar */}
       <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
-        <ProfileHeader name={displayName} email={userEmail} />
+        <View style={styles.profileHeader}>
+          <Image
+            source={{ uri: avatarUrl }}
+            style={styles.avatar}
+          />
+          <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>Your Profile</Text>
+        </View>
+      </View>
+
+      {/* Editable Profile Section */}
+      <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text.primary, paddingHorizontal: layout.spacing.lg }]}>
+          Profile Information
+        </Text>
+
+        {/* Full Name Field */}
+        <View style={styles.fieldRow}>
+          <Text style={[styles.fieldLabel, { color: colors.text.secondary }]}>Full Name</Text>
+          {isEditing ? (
+            <TextInput
+              style={[
+                styles.textInput,
+                {
+                  borderColor: colors.primary,
+                  color: colors.text.primary,
+                  backgroundColor: colors.background,
+                },
+              ]}
+              placeholder="Enter your name"
+              placeholderTextColor={colors.text.disabled}
+              value={newName}
+              onChangeText={setNewName}
+              editable={!isSavingName}
+            />
+          ) : (
+            <Text style={[styles.fieldValue, { color: colors.text.primary }]}>{displayName}</Text>
+          )}
+        </View>
+
+        {/* Email Field (Read-Only) */}
+        <View style={styles.fieldRow}>
+          <Text style={[styles.fieldLabel, { color: colors.text.secondary }]}>Email</Text>
+          <Text style={[styles.fieldValue, { color: colors.text.primary }]}>{userEmail}</Text>
+        </View>
+
+        {/* Save & Cancel Buttons or Edit Button */}
+        {isEditing ? (
+          <View style={styles.buttonGroup}>
+            <TouchableOpacity
+              style={[styles.saveButton, { backgroundColor: '#27ae60', flex: 1 }]}
+              onPress={handleSaveName}
+              disabled={isSavingName}
+            >
+              <Text style={styles.saveButtonText}>
+                {isSavingName ? 'Saving...' : 'Save Changes'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.cancelButton, { backgroundColor: '#e74c3c', flex: 1 }]}
+              onPress={handleCancelEdit}
+              disabled={isSavingName}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={[styles.editButton, { backgroundColor: colors.primary, marginHorizontal: layout.spacing.lg, marginVertical: layout.spacing.md }]}
+            onPress={() => setIsEditing(true)}
+          >
+            <Text style={styles.editButtonText}>Edit Name</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Dietary Profile */}
@@ -214,13 +307,14 @@ export function ProfileScreen() {
       )}
 
       {/* Save Preferences Button */}
-      {selectedAllergies.length > 0 || user?.allergies.length || user?.pdpaConsent ? (
+      {selectedAllergies.length > 0 || user?.allergies?.length || user?.pdpaConsent ? (
         <TouchableOpacity
           style={[
             styles.saveButton,
             {
               backgroundColor: canSavePreferences() ? colors.primary : colors.text.disabled,
               opacity: canSavePreferences() ? 1 : 0.5,
+              marginHorizontal: layout.spacing.lg,
             },
           ]}
           onPress={handleSavePreferences}
@@ -230,16 +324,15 @@ export function ProfileScreen() {
         </TouchableOpacity>
       ) : null}
 
-      {/* Existing App Settings */}
+      {/* App Settings */}
       <View style={[styles.card, { backgroundColor: colors.surface, shadowColor: '#000' }]}>
         <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>App Settings</Text>
         <PreferenceToggle label="Dark Mode" isEnabled={isDarkMode} onToggle={toggleTheme} />
-        <SettingRow
+        {/* <SettingRow
           iconName="settings"
           label="Settings Details"
           onPress={() => navigation.navigate(RouteNames.SettingsDetail as never)}
-        />
-        <SettingRow iconName="refresh" label="Reset Password" onPress={handleResetPassword} />
+        /> */}
       </View>
 
       {/* Account Settings */}
@@ -267,6 +360,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 6,
     elevation: 3,
+  },
+  profileHeader: {
+    alignItems: 'center',
+    paddingVertical: layout.spacing.md,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: layout.spacing.md,
   },
   sectionTitle: {
     fontSize: typography.size.h2,
@@ -339,6 +442,56 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   saveButtonText: {
+    color: '#fff',
+    fontSize: typography.size.body,
+    fontWeight: typography.weight.bold as any,
+  },
+  fieldRow: {
+    paddingHorizontal: layout.spacing.lg,
+    paddingVertical: layout.spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  fieldLabel: {
+    fontSize: typography.size.caption,
+    marginBottom: layout.spacing.xs,
+  },
+  fieldValue: {
+    fontSize: typography.size.body,
+    fontWeight: typography.weight.medium as any,
+  },
+  editButton: {
+    paddingVertical: layout.spacing.md,
+    borderRadius: layout.radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editButtonText: {
+    color: '#fff',
+    fontSize: typography.size.body,
+    fontWeight: typography.weight.bold as any,
+  },
+  textInput: {
+    borderWidth: 1.5,
+    borderRadius: layout.radius.sm,
+    paddingHorizontal: layout.spacing.md,
+    paddingVertical: layout.spacing.sm,
+    fontSize: typography.size.body,
+    minHeight: 44,
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    gap: layout.spacing.md,
+    paddingHorizontal: layout.spacing.lg,
+    marginVertical: layout.spacing.md,
+  },
+  cancelButton: {
+    paddingVertical: layout.spacing.md,
+    borderRadius: layout.radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButtonText: {
     color: '#fff',
     fontSize: typography.size.body,
     fontWeight: typography.weight.bold as any,

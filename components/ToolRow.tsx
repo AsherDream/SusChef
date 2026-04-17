@@ -1,28 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BaseRow } from './BaseRow';
-import { colors } from '../core/theme/colors';
 import { layout, typography } from '../core/theme/typography';
+import { useThemeColors } from '../core/theme/theme';
 
 interface ToolRowProps {
   label: string;
   icon?: React.ReactNode;
-  onToggle?: (isChecked: boolean) => void;
-  initialChecked?: boolean;
+  onToggle?: () => void;
+  isChecked?: boolean;
 }
 
 export const ToolRow: React.FC<ToolRowProps> = ({
   label,
   icon,
   onToggle,
-  initialChecked = false,
+  isChecked = false,
 }) => {
-  const [isChecked, setIsChecked] = useState(initialChecked);
-
+  const colors = useThemeColors();
   const handleToggle = () => {
-    const newState = !isChecked;
-    setIsChecked(newState);
-    onToggle?.(newState);
+    onToggle?.();
   };
 
   const styles = StyleSheet.create({

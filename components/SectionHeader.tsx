@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { colors } from '../core/theme/colors';
 import { layout, typography } from '../core/theme/typography';
+import { useThemeColors } from '../core/theme/theme';
 
 interface SectionHeaderProps {
   title: string;
@@ -14,6 +14,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   actionText,
   onActionPress,
 }) => {
+  const colors = useThemeColors();
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'row',

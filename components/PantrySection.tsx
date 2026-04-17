@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { InputField } from './InputField';
 import { SectionHeader } from './SectionHeader';
-import { colors } from '../core/theme/colors';
 import { layout, typography } from '../core/theme/typography';
+import { useThemeColors } from '../core/theme/theme';
 
 interface PantrySectionProps {
   title: string;
@@ -24,6 +24,7 @@ export const PantrySection: React.FC<PantrySectionProps> = ({
   flex = 1,
   showsVerticalScrollIndicator = true,
 }) => {
+  const colors = useThemeColors();
   const [inputValue, setInputValue] = useState('');
 
   const handleAddItem = () => {
@@ -66,7 +67,10 @@ export const PantrySection: React.FC<PantrySectionProps> = ({
         <View style={styles.listContainer}>
           <FlatList
             data={data}
-            renderItem={({ item, index }) => <View key={index}>{renderItem(item, index)}</View>}
+            renderItem={({ item, index }) => (
+              <View key={item.id || item.name || index}>{renderItem(item, index)}</View>
+            )}
+            keyExtractor={(item, index) => item.id || item.name || index.toString()}
             scrollEnabled={true}
             showsVerticalScrollIndicator={showsVerticalScrollIndicator}
             contentContainerStyle={{ paddingBottom: layout.spacing.md }}

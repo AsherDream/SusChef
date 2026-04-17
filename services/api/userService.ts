@@ -9,6 +9,7 @@ import { db } from '../../core/config/firebaseConfig';
 interface UserProfile {
   allergies: string[];
   pdpaConsent: boolean;
+  displayName?: string;
 }
 
 /**
@@ -26,6 +27,7 @@ export const saveUserProfile = async (userId: string, data: UserProfile): Promis
       {
         allergies: data.allergies,
         pdpaConsent: data.pdpaConsent,
+        displayName: data.displayName,
         updatedAt: new Date().toISOString(),
       },
       { merge: true }
@@ -52,6 +54,7 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
       return {
         allergies: data.allergies || [],
         pdpaConsent: data.pdpaConsent || false,
+        displayName: data.displayName,
       };
     }
 

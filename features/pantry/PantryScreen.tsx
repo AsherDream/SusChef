@@ -117,16 +117,11 @@ export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
       { id: 't5', name: 'Grill' },
     ];
 
-    // Map to include isChecked status from kitchenTools array
-    return allTools
-      .map((tool) => ({
-        ...tool,
-        isChecked: kitchenTools.includes(tool.name),
-      }))
-      .sort((a, b) => {
-        if (a.isChecked === b.isChecked) return 0;
-        return a.isChecked ? -1 : 1;
-      });
+    // Map to include isChecked status from kitchenTools array (no sorting to prevent UI jumping)
+    return allTools.map((tool) => ({
+      ...tool,
+      isChecked: kitchenTools.includes(tool.name),
+    }));
   }, [kitchenTools]);
 
   const handleAddIngredient = useCallback(
@@ -315,7 +310,7 @@ export const PantryScreen: React.FC<PantryScreenProps> = ({ navigation }) => {
                       renderItem={(item: Tool) => (
                         <ToolRow
                           label={item.name}
-                          initialChecked={item.isChecked}
+                          isChecked={item.isChecked}
                           onToggle={() => handleToggleTool(item.id)}
                         />
                       )}

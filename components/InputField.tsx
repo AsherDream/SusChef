@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, Pressable } from 'react-native';
 import { Eye, EyeOff, Search, Mail, Lock, User, Plus } from 'lucide-react-native';
-import { colors } from '../core/theme/colors';
 import { layout, typography } from '../core/theme/typography';
+import { useThemeColors } from '../core/theme/theme';
 
 interface InputFieldProps {
   label: string;
@@ -23,6 +23,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   iconName,
   onIconPress,
 }) => {
+  const colors = useThemeColors();
   const [isFocused, setIsFocused] = useState(false);
 
   // Map icon names to lucide icons

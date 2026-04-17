@@ -5,6 +5,7 @@ import { Recipe } from '../models/Recipe';
 import { generateRecipesFromPantry } from '../services/api/geminiService';
 import { recipeApiService } from '../services/api/recipeApiService';
 import { useAuthStore } from './useAuthStore';
+import { useAppStore } from './useAppStore';
 import { usePantryStore } from './usePantryStore';
 
 interface RecipeStore {
@@ -112,21 +113,35 @@ export const useRecipeStore = create<RecipeStore>()(
           const authState = useAuthStore.getState();
           const allergies = authState.user?.allergies || [];
 
-          // Get user's ingredients from pantry store
+          // Get user's dietary style from app store
+          const appState = useAppStore.getState();
+          const dietaryOptions = appState.dietaryStyle ? [appState.dietaryStyle] : [];
+
+          // Get user's ingredients and kitchen tools from pantry store
           const pantryState = usePantryStore.getState();
-          const ingredients = pantryState.ingredients.map(
-            (ing) => `${ing.name} (${ing.amount} ${ing.unit})`
+          
+          // Filter out empty ingredients (amount is 0, '0', or empty)
+          const validIngredients = pantryState.ingredients.filter(
+            (ing) => ing.amount !== 0 && ing.amount !== '0' && ing.amount !== null && ing.amount !== undefined && ing.amount !== ''
           );
+          
+          // Map to include amounts and units
+          const ingredients = validIngredients.map(
+            (ing) => `${ing.amount} ${ing.unit} ${ing.name}`
+          );
+
+          // Get kitchen tools array
+          const kitchenTools = pantryState.kitchenTools || [];
 
           // Validate that user has at least some ingredients
           if (ingredients.length === 0) {
             throw new Error(
-              'Please add at least one ingredient to your pantry to generate recipes.'
+              'Please add at least one ingredient with a valid amount to your pantry to generate recipes.'
             );
           }
 
           // Call Gemini API to generate recipes
-          const recipes = await generateRecipesFromPantry(ingredients, allergies);
+          const recipes = await generateRecipesFromPantry(ingredients, allergies, kitchenTools, dietaryOptions);
 
           set({ generatedRecipes: recipes, isGenerating: false });
           console.log(`✓ Successfully generated ${recipes.length} recipes`);

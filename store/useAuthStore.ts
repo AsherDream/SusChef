@@ -23,6 +23,7 @@ interface AuthState {
   checkAuthStatus: () => void;
   setLoading: (isLoading: boolean) => void;
   updateProfile: (allergies: string[], pdpaConsent: boolean) => Promise<void>;
+  updateDisplayName: (displayName: string) => Promise<void>;
   fetchAndSetProfile: (userId: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -58,9 +59,37 @@ export const useAuthStore = create<AuthState>()(
           }));
 
           // Persist to Firestore for long-term storage
-          await saveUserProfile(user.uid, { allergies, pdpaConsent });
+          await saveUserProfile(user.uid, { allergies, pdpaConsent, displayName: user.displayName });
         } catch (error) {
           console.error('Error updating profile:', error);
+          throw error;
+        }
+      },
+      updateDisplayName: async (displayName: string) => {
+        const { user } = get();
+        if (!user) {
+          throw new Error('No user logged in. Cannot update display name.');
+        }
+
+        try {
+          // Update local Zustand state immediately for optimistic UI updates
+          set((state) => ({
+            user: state.user
+              ? {
+                  ...state.user,
+                  displayName,
+                }
+              : null,
+          }));
+
+          // Persist to Firestore for long-term storage
+          await saveUserProfile(user.uid, {
+            allergies: user.allergies,
+            pdpaConsent: user.pdpaConsent,
+            displayName,
+          });
+        } catch (error) {
+          console.error('Error updating display name:', error);
           throw error;
         }
       },
@@ -75,6 +104,7 @@ export const useAuthStore = create<AuthState>()(
                     ...state.user,
                     allergies: profile.allergies,
                     pdpaConsent: profile.pdpaConsent,
+                    displayName: profile.displayName || state.user.displayName,
                   }
                 : null,
             }));

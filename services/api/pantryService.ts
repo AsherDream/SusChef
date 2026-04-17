@@ -56,6 +56,7 @@ export async function getUserPantry(userId: string): Promise<PantryData | null> 
 
     const data = pantrySnapshot.data() as PantryData;
     console.log('Pantry fetched from Firestore:', userId);
+    console.log('Loaded Kitchen Tools:', data.kitchenTools);
     return data;
   } catch (error) {
     console.error('Error fetching pantry:', error);

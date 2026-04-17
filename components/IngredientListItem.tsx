@@ -19,6 +19,7 @@ const IngredientListItem = React.memo<IngredientListItemProps>(
   ({ item, onDelete, onAmountChange, onUnitChange }) => {
     return (
       <IngredientRow
+        id={item.id}
         label={item.name}
         amount={item.amount}
         unit={item.unit}
