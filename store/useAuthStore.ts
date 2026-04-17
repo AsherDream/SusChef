@@ -13,6 +13,7 @@ interface AuthUser {
   emailVerified: boolean;
   allergies: string[];
   pdpaConsent: boolean;
+  dietaryProfile?: string;
 }
 
 interface AuthState {
@@ -22,7 +23,7 @@ interface AuthState {
   clearUser: () => void;
   checkAuthStatus: () => void;
   setLoading: (isLoading: boolean) => void;
-  updateProfile: (allergies: string[], pdpaConsent: boolean) => Promise<void>;
+  updateProfile: (allergies: string[], pdpaConsent: boolean, dietaryProfile?: string) => Promise<void>;
   updateDisplayName: (displayName: string) => Promise<void>;
   fetchAndSetProfile: (userId: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -40,7 +41,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: false });
       },
       setLoading: (isLoading) => set({ isLoading }),
-      updateProfile: async (allergies: string[], pdpaConsent: boolean) => {
+      updateProfile: async (allergies: string[], pdpaConsent: boolean, dietaryProfile?: string) => {
         const { user } = get();
         if (!user) {
           throw new Error('No user logged in. Cannot update profile.');
@@ -54,12 +55,18 @@ export const useAuthStore = create<AuthState>()(
                   ...state.user,
                   allergies,
                   pdpaConsent,
+                  dietaryProfile: dietaryProfile || state.user.dietaryProfile,
                 }
               : null,
           }));
 
           // Persist to Firestore for long-term storage
-          await saveUserProfile(user.uid, { allergies, pdpaConsent, displayName: user.displayName });
+          await saveUserProfile(user.uid, {
+            allergies,
+            pdpaConsent,
+            displayName: user.displayName,
+            dietaryProfile,
+          });
         } catch (error) {
           console.error('Error updating profile:', error);
           throw error;
@@ -87,6 +94,7 @@ export const useAuthStore = create<AuthState>()(
             allergies: user.allergies,
             pdpaConsent: user.pdpaConsent,
             displayName,
+            dietaryProfile: user.dietaryProfile,
           });
         } catch (error) {
           console.error('Error updating display name:', error);
@@ -105,6 +113,7 @@ export const useAuthStore = create<AuthState>()(
                     allergies: profile.allergies,
                     pdpaConsent: profile.pdpaConsent,
                     displayName: profile.displayName || state.user.displayName,
+                    dietaryProfile: profile.dietaryProfile,
                   }
                 : null,
             }));

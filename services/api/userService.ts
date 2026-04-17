@@ -10,6 +10,7 @@ interface UserProfile {
   allergies: string[];
   pdpaConsent: boolean;
   displayName?: string;
+  dietaryProfile?: string;
 }
 
 /**
@@ -28,6 +29,7 @@ export const saveUserProfile = async (userId: string, data: UserProfile): Promis
         allergies: data.allergies,
         pdpaConsent: data.pdpaConsent,
         displayName: data.displayName,
+        dietaryProfile: data.dietaryProfile,
         updatedAt: new Date().toISOString(),
       },
       { merge: true }
@@ -55,6 +57,7 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
         allergies: data.allergies || [],
         pdpaConsent: data.pdpaConsent || false,
         displayName: data.displayName,
+        dietaryProfile: data.dietaryProfile,
       };
     }
 

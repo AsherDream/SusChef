@@ -110,7 +110,7 @@ export function ProfileScreen() {
 
     setIsSaving(true);
     try {
-      await updateProfile(selectedAllergies, pdpaConsent);
+      await updateProfile(selectedAllergies, pdpaConsent, dietaryStyle);
       Alert.alert('Success', 'Your preferences have been saved.');
     } catch (error) {
       Alert.alert('Error', 'Failed to save preferences. Please try again.');
